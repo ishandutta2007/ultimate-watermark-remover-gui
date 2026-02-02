@@ -4,39 +4,6 @@ import cv2
 import numpy as np
 import os
 
-def remove_watermark_from_frame(frame, mask_path):
-    """
-    Removes a watermark from a single frame using a provided mask.
-    """
-    if frame is None:
-        return None
-
-    # Load the watermark mask
-    mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-    if mask_img is None:
-        print(f"Error: Could not open or find the watermark mask at {mask_path}")
-        return frame # Return original frame if mask not found
-
-    # Resize mask to match frame dimensions
-    mask = cv2.resize(mask_img, (frame.shape[1], frame.shape[0]), interpolation=cv2.INTER_AREA)
-
-    # Ensure mask is binary (0 or 255)
-    _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
-
-    # Use inpainting to remove the watermark
-    dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
-    return dst
-
-import time
-import sys
-import cv2
-import numpy as np
-import os
-
-def is_image_file(path):
-    image_extensions = (".png", ".jpg", ".jpeg", ".bmp", ".gif")
-    return path.lower().endswith(image_extensions)
-
 def is_video_file(path):
     video_extensions = (".mp4", ".avi", ".mov", ".mkv")
     return path.lower().endswith(video_extensions)
@@ -64,6 +31,36 @@ def remove_watermark_from_frame(frame, mask_path):
     dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
     return dst
 
+def remove_watermark_from_image_using_template(frame, watermark_template_path, threshold=0.8):
+    """
+    Removes a watermark from a single frame using template matching.
+    """
+    if frame is None:
+        return None
+
+    # Load the watermark template
+    watermark_template = cv2.imread(watermark_template_path, cv2.IMREAD_COLOR)
+    if watermark_template is None:
+        print(f"Error: Could not open or find the watermark template at {watermark_template_path}")
+        return frame # Return original frame if template not found
+
+    # Convert frame and template to grayscale for template matching
+    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    watermark_template_gray = cv2.cvtColor(watermark_template, cv2.COLOR_BGR2GRAY)
+
+    # Perform template matching
+    res = cv2.matchTemplate(frame_gray, watermark_template_gray, cv2.TM_CCOEFF_NORMED)
+    loc = np.where(res >= threshold)
+
+    # Create a mask for the detected watermark areas
+    mask = np.zeros(frame.shape[:2], dtype="uint8")
+    for pt in zip(*loc[::-1]): # Switch x and y coordinates
+        cv2.rectangle(mask, pt, (pt[0] + watermark_template.shape[1], pt[1] + watermark_template.shape[0]), 255, -1)
+
+    # Use inpainting to remove the watermark
+    dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
+    return dst
+
 def main():
     """
     A worker function that removes a watermark from an image or video using a provided mask.
@@ -71,19 +68,19 @@ def main():
     print("Worker process started.")
 
     if len(sys.argv) < 7:
-        print("Error: Missing arguments. Expected: watermark_mask_deleted_path, watermark_mask_applied_path, video_to_be_edited_path, steps, color, tolerance")
+        print("Error: Missing arguments. Expected: watermark_template_path, watermark_mask_applied_path, media_to_be_edited_path, steps, color, tolerance")
         sys.exit(1)
 
-    watermark_mask_deleted_path = sys.argv[1] # This will be the image input
-    watermark_mask_applied_path = sys.argv[2]
-    video_to_be_edited_path = sys.argv[3] # This will be the video input
+    watermark_template_path = sys.argv[1] # This will be the watermark template input
+    watermark_mask_applied_path = sys.argv[2] # This will be ignored as per user's request
+    media_to_be_edited_path = sys.argv[3] # This will be the image or video input
     steps = int(sys.argv[4]) # Currently not used for image/video processing
     hex_color = sys.argv[5] # Currently not used for mask based removal
     tolerance = int(sys.argv[6]) # Currently not used for mask based removal
 
-    print(f"Watermark mask (image to be cleaned) path: {watermark_mask_deleted_path}")
-    print(f"Watermark mask (mask image) path: {watermark_mask_applied_path}")
-    print(f"Video to be edited path: {video_to_be_edited_path}")
+    print(f"Watermark template path: {watermark_template_path}")
+    print(f"Watermark mask (image to be applied) path (ignored): {watermark_mask_applied_path}")
+    print(f"Media to be edited path: {media_to_be_edited_path}")
     print(f"Processing steps: {steps}")
     print(f"Color received: {hex_color}")
     print(f"Tolerance received: {tolerance}")
@@ -97,81 +94,84 @@ def main():
 
 
     try:
-        if video_to_be_edited_path and os.path.exists(video_to_be_edited_path) and is_video_file(video_to_be_edited_path):
-            print(f"DEBUG: Entering video processing block for {video_to_be_edited_path}")
-            cap = cv2.VideoCapture(video_to_be_edited_path)
-            if not cap.isOpened():
-                print(f"Error: Could not open video file at {video_to_be_edited_path}")
-                sys.exit(1)
+        if media_to_be_edited_path and os.path.exists(media_to_be_edited_path):
+            if is_video_file(media_to_be_edited_path):
+                print(f"DEBUG: Entering video processing block for {media_to_be_edited_path}")
+                cap = cv2.VideoCapture(media_to_be_edited_path)
+                if not cap.isOpened():
+                    print(f"Error: Could not open video file at {media_to_be_edited_path}")
+                    sys.exit(1)
 
-            frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            fps = cap.get(cv2.CAP_PROP_FPS) # Use float for FPS
-            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            print(f"DEBUG: Video total frames: {total_frames}")
+                frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                fps = cap.get(cv2.CAP_PROP_FPS) # Use float for FPS
+                total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                print(f"DEBUG: Video total frames: {total_frames}")
+                
+                # Create subfolders for frames
+                video_basename = os.path.splitext(os.path.basename(media_to_be_edited_path))[0]
+                output_frames_dir = os.path.join(os.path.dirname(media_to_be_edited_path), f"{video_basename}_frames")
+                original_frames_dir = os.path.join(output_frames_dir, "original_frames")
+                processed_frames_dir = os.path.join(output_frames_dir, "processed_frames")
+
+                os.makedirs(original_frames_dir, exist_ok=True)
+                os.makedirs(processed_frames_dir, exist_ok=True)
+                print(f"DEBUG: Original frames will be saved to: {original_frames_dir}")
+                print(f"DEBUG: Processed frames will be saved to: {processed_frames_dir}")
+
+
+                output_video_path = media_to_be_edited_path.replace(".", "_processed.")
+                fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
+                out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
+
+                processed_frames = 0
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    
+                    # Save original frame
+                    original_frame_path = os.path.join(original_frames_dir, f"frame_{processed_frames:05d}.jpg")
+                    cv2.imwrite(original_frame_path, frame)
+
+                    processed_frame = remove_watermark_from_image_using_template(frame, watermark_template_path, threshold=tolerance/100.0)
+                    if processed_frame is not None:
+                        out.write(processed_frame)
+                        # Save processed frame
+                        processed_frame_path = os.path.join(processed_frames_dir, f"frame_{processed_frames:05d}.jpg")
+                        cv2.imwrite(processed_frame_path, processed_frame)
+                    
+                    processed_frames += 1
+                    if total_frames > 0: 
+                        progress = int((processed_frames / total_frames) * 100)
+                        print(f"PROGRESS:{progress}")
+                        sys.stdout.flush()
+                    
+                cap.release()
+                out.release()
+                print(f"Processed video saved to: {output_video_path}")
+                print("PROGRESS:100")
+                sys.stdout.flush()
             
-            # Create subfolders for frames
-            video_basename = os.path.splitext(os.path.basename(video_to_be_edited_path))[0]
-            output_frames_dir = os.path.join(os.path.dirname(video_to_be_edited_path), f"{video_basename}_frames")
-            original_frames_dir = os.path.join(output_frames_dir, "original_frames")
-            processed_frames_dir = os.path.join(output_frames_dir, "processed_frames")
-
-            os.makedirs(original_frames_dir, exist_ok=True)
-            os.makedirs(processed_frames_dir, exist_ok=True)
-            print(f"DEBUG: Original frames will be saved to: {original_frames_dir}")
-            print(f"DEBUG: Processed frames will be saved to: {processed_frames_dir}")
-
-
-            output_video_path = video_to_be_edited_path.replace(".", "_processed.")
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
-            out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
-
-            processed_frames = 0
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
+            elif is_image_file(media_to_be_edited_path):
+                print(f"DEBUG: Entering image processing block for {media_to_be_edited_path}")
+                img = cv2.imread(media_to_be_edited_path)
+                if img is None:
+                    print(f"Error: Could not open or find the image at {media_to_be_edited_path}")
+                    sys.exit(1)
                 
-                # Save original frame
-                original_frame_path = os.path.join(original_frames_dir, f"frame_{processed_frames:05d}.jpg")
-                cv2.imwrite(original_frame_path, frame)
-
-                processed_frame = remove_watermark_from_frame(frame, watermark_mask_applied_path)
-                if processed_frame is not None:
-                    out.write(processed_frame)
-                    # Save processed frame
-                    processed_frame_path = os.path.join(processed_frames_dir, f"frame_{processed_frames:05d}.jpg")
-                    cv2.imwrite(processed_frame_path, processed_frame)
-                
-                processed_frames += 1
-                if total_frames > 0: 
-                    progress = int((processed_frames / total_frames) * 100)
-                    print(f"PROGRESS:{progress}")
-                    sys.stdout.flush()
-                
-            cap.release()
-            out.release()
-            print(f"Processed video saved to: {output_video_path}")
-            print("PROGRESS:100")
-            sys.stdout.flush()
-        
-        elif watermark_mask_deleted_path and os.path.exists(watermark_mask_deleted_path) and is_image_file(watermark_mask_deleted_path):
-            print(f"DEBUG: Entering image processing block for {watermark_mask_deleted_path}")
-            img = cv2.imread(watermark_mask_deleted_path)
-            if img is None:
-                print(f"Error: Could not open or find the image at {watermark_mask_deleted_path}")
+                processed_img = remove_watermark_from_image_using_template(img, watermark_template_path, threshold=tolerance/100.0)
+                if processed_img is not None:
+                    output_path = media_to_be_edited_path.replace(".", "_processed.")
+                    cv2.imwrite(output_path, processed_img)
+                    print(f"Processed image saved to: {output_path}")
+                print("PROGRESS:100")
+                sys.stdout.flush()
+            else:
+                print("Error: Provided path is neither a valid image nor a valid video file.")
                 sys.exit(1)
-            
-            processed_img = remove_watermark_from_frame(img, watermark_mask_applied_path)
-            if processed_img is not None:
-                output_path = watermark_mask_deleted_path.replace(".", "_processed.")
-                cv2.imwrite(output_path, processed_img)
-                print(f"Processed image saved to: {output_path}")
-            print("PROGRESS:100")
-            sys.stdout.flush()
-
         else:
-            print("Error: No valid image or video path provided for processing.")
+            print("Error: No valid media path provided for processing or path does not exist.")
             sys.exit(1)
 
     except Exception as e:
