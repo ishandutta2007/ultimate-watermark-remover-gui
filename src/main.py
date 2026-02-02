@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QProgressBar,
 )
-from PySide6.QtGui import QColor
 from PySide6.QtCore import QProcess, Qt
 
 
@@ -63,6 +62,10 @@ class MainWindow(QMainWindow):
         self.steps_layout.addWidget(self.steps_label)
         self.steps_layout.addWidget(self.steps_input)
 
+        # Progress label
+        self.progress_label = QLabel("")
+        self.progress_label.setAlignment(Qt.AlignCenter)
+
         # Progress bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
@@ -83,6 +86,7 @@ class MainWindow(QMainWindow):
             self.watermark_mask_deleted_layout
         )  # Now watermark template
         self.layout.addLayout(self.steps_layout)
+        self.layout.addWidget(self.progress_label)
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
         self.layout.addWidget(self.start_button)
@@ -171,6 +175,7 @@ class MainWindow(QMainWindow):
             return
 
         self.progress_bar.setValue(0)  # Reset progress bar
+        self.progress_label.setText("Starting processing...") # Set initial progress label
         self.log_display.clear()
         self.log_display.append("Starting worker process...")
         self.start_button.setEnabled(False)
@@ -201,17 +206,21 @@ class MainWindow(QMainWindow):
                 self.update_progress_bar(progress_value)
             except ValueError:
                 pass  # Ignore malformed progress messages
+        elif stdout.startswith("STAGE:"):
+            self.progress_label.setText(stdout[6:].strip()) # Update progress label with stage message
 
     def handle_finished(self, exit_code, exit_status):
         status = "finished" if exit_status == QProcess.NormalExit else "crashed"
         self.log_display.append(f"Process {status} with exit code: {exit_code}.")
         self.start_button.setEnabled(True)
         self.progress_bar.setValue(0)  # Reset or set to 100 upon completion
+        self.progress_label.setText("Finished.") # Clear progress label or set to finished
 
     def handle_error(self, error):
         self.log_display.append(f"An error occurred: {error.name}")
         self.start_button.setEnabled(True)
         self.progress_bar.setValue(0)  # Reset on error
+        self.progress_label.setText("Error occurred.") # Set progress label to error
 
     def is_image_file(self, path):
         image_extensions = (".png", ".jpg", ".jpeg", ".bmp", ".gif")
@@ -226,12 +235,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
-    try:
-        exit_code = app.exec()
-        print(f"Application finished with exit code: {exit_code}")
-        sys.exit(exit_code)
-    except Exception as e:
-        print(f"An exception occurred: {e}")
-        import traceback
-
-        traceback.print_exc()
+    sys.exit(app.exec())

@@ -100,11 +100,14 @@ def main():
                 print(f"DEBUG: Original frames will be saved to: {original_frames_dir}")
                 print(f"DEBUG: Unmasked frames will be saved to: {unmasked_frames_dir}")
 
+                print("STAGE: Extracting frames and preparing for unmasking...")
+
                 output_video_path = media_to_be_edited_path.replace(".", "_unmasked.")
                 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
                 out = cv2.VideoWriter(
                     output_video_path, fourcc, fps, (frame_width, frame_height)
                 )
+                print("STAGE: Unmasking video frames...")
 
                 unmasked_frames = 0
                 while True:
@@ -139,6 +142,7 @@ def main():
                 out.release()
 
                 # --- Audio Merging Logic ---
+                print("STAGE: Handling audio for the final video...")
                 temp_video_path = output_video_path  # The one without audio
                 final_video_path_with_audio = temp_video_path.replace(
                     "_unmasked.", "_unmasked_with_audio."
@@ -147,6 +151,7 @@ def main():
 
                 try:
                     # 1. Extract audio from original video
+                    print("STAGE: Extracting audio from original video...")
                     extract_command = [
                         "ffmpeg",
                         "-y",
@@ -157,10 +162,11 @@ def main():
                         "copy",
                         audio_path,
                     ]
-                    print("DEBUG: Extracting audio...")
+                    print("DEBUG: Running ffmpeg to extract audio...")
                     subprocess.run(extract_command, check=True, capture_output=True)
 
                     # 2. Combine unmasked video with extracted audio
+                    print("STAGE: Combining video and audio...")
                     combine_command = [
                         "ffmpeg",
                         "-y",
@@ -176,14 +182,14 @@ def main():
                         "experimental",
                         final_video_path_with_audio,
                     ]
-                    print("DEBUG: Combining video and audio...")
+                    print("DEBUG: Running ffmpeg to combine video and audio...")
                     subprocess.run(combine_command, check=True, capture_output=True)
 
                     # 3. Success: cleanup and rename
                     os.remove(temp_video_path)
                     os.remove(audio_path)
                     os.rename(final_video_path_with_audio, output_video_path)
-                    print("DEBUG: Audio merged successfully.")
+                    print("STAGE: Audio merged successfully.")
 
                 except (subprocess.CalledProcessError, FileNotFoundError) as e:
                     # ffmpeg might not be installed, or the video might not have audio.
@@ -219,6 +225,7 @@ def main():
                     output_path = media_to_be_edited_path.replace(".", "_unmasked.")
                     cv2.imwrite(output_path, unmasked_img)
                     print(f"Unmasked image saved to: {output_path}")
+                print("STAGE: Image processing complete.")
                 print("PROGRESS:100")
                 sys.stdout.flush()
             else:
