@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Python GUI Wrapper")
+        self.setWindowTitle("Ultimate Watermark Remover")
         self.setGeometry(100, 100, 600, 400)
 
         # Main widget and layout
