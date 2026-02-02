@@ -61,37 +61,6 @@ def remove_watermark_from_image_using_template(image_path, mask_path, inpaint_ra
     return result
 
 
-# def remove_watermark_from_image_using_template(frame, watermark_template_path, threshold=0.8):
-#     """
-#     Removes a watermark from a single frame using template matching.
-#     """
-#     if frame is None:
-#         return None
-
-#     # Load the watermark template
-#     watermark_template = cv2.imread(watermark_template_path, cv2.IMREAD_COLOR)
-#     if watermark_template is None:
-#         print(f"Error: Could not open or find the watermark template at {watermark_template_path}")
-#         return frame # Return original frame if template not found
-
-#     # Convert frame and template to grayscale for template matching
-#     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-#     watermark_template_gray = cv2.cvtColor(watermark_template, cv2.COLOR_BGR2GRAY)
-
-#     # Perform template matching
-#     res = cv2.matchTemplate(frame_gray, watermark_template_gray, cv2.TM_CCOEFF_NORMED)
-#     loc = np.where(res >= threshold)
-
-#     # Create a mask for the detected watermark areas
-#     mask = np.zeros(frame.shape[:2], dtype="uint8")
-#     for pt in zip(*loc[::-1]): # Switch x and y coordinates
-#         cv2.rectangle(mask, pt, (pt[0] + watermark_template.shape[1], pt[1] + watermark_template.shape[0]), 255, -1)
-
-#     # Use inpainting to remove the watermark
-#     dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
-#     return dst
-
-
 def main():
     """
     A worker function that removes a watermark from an image or video using a provided mask.
