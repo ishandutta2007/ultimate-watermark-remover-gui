@@ -143,5 +143,7 @@ videos/*_processed.webm
 videos/*_processed.wmv
 videos/*_processed.flv
 
+videos/*/*.jpg
+
 
 */*.bak
