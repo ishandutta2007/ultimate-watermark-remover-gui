@@ -30,13 +30,26 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
         self.layout = QVBoxLayout(self.central_widget)
 
-        # File input layout
-        self.file_input_layout = QHBoxLayout()
-        self.file_path_display = QLineEdit()
-        self.file_path_display.setPlaceholderText("Select a file...")
-        self.browse_button = QPushButton("Browse")
-        self.file_input_layout.addWidget(self.file_path_display)
-        self.file_input_layout.addWidget(self.browse_button)
+        # File input for "watermark mask to be deleted"
+        (self.watermark_mask_deleted_layout, self.watermark_mask_deleted_path_display,
+         self.watermark_mask_deleted_browse_button) = self._create_file_input(
+            "watermark mask to be deleted:", "Select image file (e.g., .jpg, .png)...",
+            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"
+        )
+
+        # File input for "watermark mask to be applied"
+        (self.watermark_mask_applied_layout, self.watermark_mask_applied_path_display,
+         self.watermark_mask_applied_browse_button) = self._create_file_input(
+            "watermark mask to be applied:", "Select image file (e.g., .jpg, .png)...",
+            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"
+        )
+
+        # File input for "video to be edited"
+        (self.video_to_be_edited_layout, self.video_to_be_edited_path_display,
+         self.video_to_be_edited_browse_button) = self._create_file_input(
+            "video to be edited:", "Select video file (e.g., .mp4, .avi)...",
+            "Video Files (*.mp4 *.avi *.mov *.mkv)"
+        )
 
         # Steps input
         self.steps_layout = QHBoxLayout()
@@ -79,7 +92,9 @@ class MainWindow(QMainWindow):
         self.start_button = QPushButton("Start Processing")
 
         # Add widgets to layout
-        self.layout.addLayout(self.file_input_layout)
+        self.layout.addLayout(self.watermark_mask_deleted_layout)
+        self.layout.addLayout(self.watermark_mask_applied_layout)
+        self.layout.addLayout(self.video_to_be_edited_layout)
         self.layout.addLayout(self.steps_layout)
         self.layout.addLayout(self.color_layout)
         self.layout.addLayout(self.tolerance_layout)
@@ -91,7 +106,18 @@ class MainWindow(QMainWindow):
         self.process.setProcessChannelMode(QProcess.MergedChannels)
 
         # Connect signals
-        self.browse_button.clicked.connect(self.open_file_dialog)
+        self.watermark_mask_deleted_browse_button.clicked.connect(
+            lambda: self.open_file_dialog(self.watermark_mask_deleted_path_display,
+                                          "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)")
+        )
+        self.watermark_mask_applied_browse_button.clicked.connect(
+            lambda: self.open_file_dialog(self.watermark_mask_applied_path_display,
+                                          "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)")
+        )
+        self.video_to_be_edited_browse_button.clicked.connect(
+            lambda: self.open_file_dialog(self.video_to_be_edited_path_display,
+                                          "Video Files (*.mp4 *.avi *.mov *.mkv)")
+        )
         self.color_button.clicked.connect(self.open_color_dialog)
         self.tolerance_slider.valueChanged.connect(self.update_tolerance_label)
         self.start_button.clicked.connect(self.start_worker_process)
@@ -99,10 +125,22 @@ class MainWindow(QMainWindow):
         self.process.finished.connect(self.handle_finished)
         self.process.errorOccurred.connect(self.handle_error)
 
-    def open_file_dialog(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Select a File")
+    def _create_file_input(self, label_text, placeholder_text, file_filter):
+        layout = QHBoxLayout()
+        label = QLabel(label_text)
+        path_display = QLineEdit()
+        path_display.setPlaceholderText(placeholder_text)
+        browse_button = QPushButton("Browse")
+
+        layout.addWidget(label)
+        layout.addWidget(path_display)
+        layout.addWidget(browse_button)
+        return layout, path_display, browse_button
+
+    def open_file_dialog(self, path_display_widget, file_filter):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Select a File", "", file_filter)
         if file_path:
-            self.file_path_display.setText(file_path)
+            path_display_widget.setText(file_path)
 
     def open_color_dialog(self):
         color = QColorDialog.getColor()
@@ -117,9 +155,12 @@ class MainWindow(QMainWindow):
         self.tolerance_value_label.setText(str(value))
 
     def start_worker_process(self):
-        file_path = self.file_path_display.text()
-        if not file_path:
-            self.log_display.append("Please select a file first.")
+        watermark_mask_deleted_path = self.watermark_mask_deleted_path_display.text()
+        watermark_mask_applied_path = self.watermark_mask_applied_path_display.text()
+        video_to_be_edited_path = self.video_to_be_edited_path_display.text()
+
+        if not (watermark_mask_deleted_path and watermark_mask_applied_path and video_to_be_edited_path):
+            self.log_display.append("Please select all three files before starting.")
             return
 
         steps = self.steps_input.value()
@@ -130,7 +171,13 @@ class MainWindow(QMainWindow):
         self.log_display.append("Starting worker process...")
         self.start_button.setEnabled(False)
         # We use python -u for unbuffered output
-        self.process.start("python", ["-u", "src/worker.py", file_path, str(steps), color, str(tolerance)])
+        self.process.start("python", ["-u", "src/worker.py",
+                                      watermark_mask_deleted_path,
+                                      watermark_mask_applied_path,
+                                      video_to_be_edited_path,
+                                      str(steps),
+                                      color,
+                                      str(tolerance)])
 
     def handle_stdout(self):
         data = self.process.readAllStandardOutput()
