@@ -10,30 +10,30 @@ def is_video_file(path):
     return path.lower().endswith(video_extensions)
 
 
-def remove_watermark_from_frame(frame, mask_path):
-    """
-    Removes a watermark from a single frame using a provided mask.
-    """
-    if frame is None:
-        return None
+# def remove_watermark_from_frame(frame, mask_path):
+#     """
+#     Removes a watermark from a single frame using a provided mask.
+#     """
+#     if frame is None:
+#         return None
 
-    # Load the watermark mask
-    mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-    if mask_img is None:
-        print(f"Error: Could not open or find the watermark mask at {mask_path}")
-        return frame  # Return original frame if mask not found
+#     # Load the watermark mask
+#     mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+#     if mask_img is None:
+#         print(f"Error: Could not open or find the watermark mask at {mask_path}")
+#         return frame  # Return original frame if mask not found
 
-    # Resize mask to match frame dimensions
-    mask = cv2.resize(
-        mask_img, (frame.shape[1], frame.shape[0]), interpolation=cv2.INTER_AREA
-    )
+#     # Resize mask to match frame dimensions
+#     mask = cv2.resize(
+#         mask_img, (frame.shape[1], frame.shape[0]), interpolation=cv2.INTER_AREA
+#     )
 
-    # Ensure mask is binary (0 or 255)
-    _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
+#     # Ensure mask is binary (0 or 255)
+#     _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
 
-    # Use inpainting to remove the watermark
-    dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
-    return dst
+#     # Use inpainting to remove the watermark
+#     dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
+#     return dst
 
 
 def remove_watermark_from_image_using_template(image_path, mask_path, inpaint_radius=3):
