@@ -140,23 +140,41 @@ def main():
 
                 # --- Audio Merging Logic ---
                 temp_video_path = output_video_path  # The one without audio
-                final_video_path_with_audio = temp_video_path.replace('_unmasked.', '_unmasked_with_audio.')
+                final_video_path_with_audio = temp_video_path.replace(
+                    "_unmasked.", "_unmasked_with_audio."
+                )
                 audio_path = os.path.join(output_frames_dir, "extracted_audio.aac")
 
                 try:
                     # 1. Extract audio from original video
                     extract_command = [
-                        'ffmpeg', '-y', '-i', media_to_be_edited_path,
-                        '-vn', '-acodec', 'copy', audio_path
+                        "ffmpeg",
+                        "-y",
+                        "-i",
+                        media_to_be_edited_path,
+                        "-vn",
+                        "-acodec",
+                        "copy",
+                        audio_path,
                     ]
                     print("DEBUG: Extracting audio...")
                     subprocess.run(extract_command, check=True, capture_output=True)
 
                     # 2. Combine unmasked video with extracted audio
                     combine_command = [
-                        'ffmpeg', '-y', '-i', temp_video_path, '-i', audio_path,
-                        '-c:v', 'copy', '-c:a', 'aac', '-strict', 'experimental',
-                        final_video_path_with_audio
+                        "ffmpeg",
+                        "-y",
+                        "-i",
+                        temp_video_path,
+                        "-i",
+                        audio_path,
+                        "-c:v",
+                        "copy",
+                        "-c:a",
+                        "aac",
+                        "-strict",
+                        "experimental",
+                        final_video_path_with_audio,
                     ]
                     print("DEBUG: Combining video and audio...")
                     subprocess.run(combine_command, check=True, capture_output=True)
@@ -170,13 +188,15 @@ def main():
                 except (subprocess.CalledProcessError, FileNotFoundError) as e:
                     # ffmpeg might not be installed, or the video might not have audio.
                     # In that case, we will just use the video without audio.
-                    print(f"DEBUG: Could not merge audio. Using video without audio. Reason: {e}")
+                    print(
+                        f"DEBUG: Could not merge audio. Using video without audio. Reason: {e}"
+                    )
                     if os.path.exists(final_video_path_with_audio):
                         os.remove(final_video_path_with_audio)
                     if os.path.exists(audio_path):
                         os.remove(audio_path)
                     # The output_video_path is already the silent one, so we are good.
-                
+
                 print(f"Unmasked video saved to: {output_video_path}")
                 print("PROGRESS:100")
                 sys.stdout.flush()

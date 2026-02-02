@@ -233,5 +233,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"An exception occurred: {e}")
         import traceback
-        traceback.print_exc()
 
+        traceback.print_exc()
