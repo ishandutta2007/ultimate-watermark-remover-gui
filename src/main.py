@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QColorDialog,
     QSlider,
+    QProgressBar,
 )
 from PySide6.QtGui import QColor
 from PySide6.QtCore import QProcess, Qt
@@ -86,6 +87,10 @@ class MainWindow(QMainWindow):
         self.tolerance_layout.addWidget(self.tolerance_slider)
         self.tolerance_layout.addWidget(self.tolerance_value_label)
 
+        # Progress bar
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
 
         # UI Elements
         self.log_display = QTextEdit()
@@ -101,6 +106,7 @@ class MainWindow(QMainWindow):
         self.layout.addLayout(self.steps_layout)
         self.layout.addLayout(self.color_layout)
         self.layout.addLayout(self.tolerance_layout)
+        self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
         self.layout.addWidget(self.start_button)
 
@@ -157,19 +163,28 @@ class MainWindow(QMainWindow):
     def update_tolerance_label(self, value):
         self.tolerance_value_label.setText(str(value))
 
+    def update_progress_bar(self, value):
+        self.progress_bar.setValue(value)
+
     def start_worker_process(self):
         watermark_mask_deleted_path = self.watermark_mask_deleted_path_display.text()
         watermark_mask_applied_path = self.watermark_mask_applied_path_display.text()
         video_to_be_edited_path = self.video_to_be_edited_path_display.text()
 
-        if not (watermark_mask_deleted_path and watermark_mask_applied_path and video_to_be_edited_path):
-            self.log_display.append("Please select all three files before starting.")
+        # Simplified check for demonstration. In a real app, you might want more robust validation.
+        is_image_processing = watermark_mask_deleted_path and self.is_image_file(watermark_mask_deleted_path)
+        is_video_processing = video_to_be_edited_path and self.is_video_file(video_to_be_edited_path)
+
+
+        if not (is_image_processing or is_video_processing):
+            self.log_display.append("Please select an image or a video file for processing.")
             return
 
-        steps = self.steps_input.value()
-        color = self.selected_color.name()
-        tolerance = self.tolerance_slider.value()
+        if not watermark_mask_applied_path:
+            self.log_display.append("Please select a watermark mask to be applied.")
+            return
 
+        self.progress_bar.setValue(0) # Reset progress bar
         self.log_display.clear()
         self.log_display.append("Starting worker process...")
         self.start_button.setEnabled(False)
@@ -178,22 +193,41 @@ class MainWindow(QMainWindow):
                                       watermark_mask_deleted_path,
                                       watermark_mask_applied_path,
                                       video_to_be_edited_path,
-                                      str(steps),
-                                      color,
-                                      str(tolerance)])
+                                      str(self.steps_input.value()),
+                                      self.selected_color.name(),
+                                      str(self.tolerance_slider.value())])
 
     def handle_stdout(self):
         data = self.process.readAllStandardOutput()
-        self.log_display.append(data.data().decode("utf-8").strip())
+        stdout = data.data().decode("utf-8").strip()
+        self.log_display.append(stdout)
+
+        # Check for progress updates
+        if stdout.startswith("PROGRESS:"):
+            try:
+                progress_value = int(stdout.split(":")[1])
+                self.update_progress_bar(progress_value)
+            except ValueError:
+                pass # Ignore malformed progress messages
 
     def handle_finished(self, exit_code, exit_status):
         status = "finished" if exit_status == QProcess.NormalExit else "crashed"
         self.log_display.append(f"Process {status} with exit code: {exit_code}.")
         self.start_button.setEnabled(True)
+        self.progress_bar.setValue(0) # Reset or set to 100 upon completion
 
     def handle_error(self, error):
         self.log_display.append(f"An error occurred: {error.name}")
         self.start_button.setEnabled(True)
+        self.progress_bar.setValue(0) # Reset on error
+
+    def is_image_file(self, path):
+        image_extensions = (".png", ".jpg", ".jpeg", ".bmp", ".gif")
+        return path.lower().endswith(image_extensions)
+
+    def is_video_file(self, path):
+        video_extensions = (".mp4", ".avi", ".mov", ".mkv")
+        return path.lower().endswith(video_extensions)
 
 
 if __name__ == "__main__":
