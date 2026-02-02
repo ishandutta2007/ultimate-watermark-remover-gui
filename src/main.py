@@ -223,6 +223,80 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
+    # Modern Dark Theme Stylesheet
+    QSS = """
+QMainWindow {
+    background-color: #2b2b2b; /* Dark background */
+    color: #f0f0f0; /* Light text */
+}
+
+QWidget {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+    font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 10pt;
+}
+
+QLabel {
+    color: #f0f0f0;
+    padding: 2px;
+}
+
+QLineEdit, QTextEdit, QSpinBox {
+    background-color: #3c3c3c; /* Slightly lighter dark for input fields */
+    border: 1px solid #5a5a5a;
+    border-radius: 4px;
+    padding: 5px;
+    color: #f0f0f0;
+    selection-background-color: #0078d7; /* Accent blue for selection */
+}
+
+QPushButton {
+    background-color: #0078d7; /* Accent blue for buttons */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #0060ad; /* Darker blue on hover */
+}
+
+QPushButton:pressed {
+    background-color: #004c8c; /* Even darker blue when pressed */
+}
+
+QProgressBar {
+    text-align: center;
+    background-color: #3c3c3c;
+    border: 1px solid #5a5a5a;
+    border-radius: 5px;
+    color: #f0f0f0;
+}
+
+QProgressBar::chunk {
+    background-color: #0078d7; /* Accent blue for progress */
+    border-radius: 5px;
+}
+
+QFileDialog {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+}
+
+/* For the file input layouts, to ensure consistent background */
+QHBoxLayout, QVBoxLayout {
+    background-color: #2b2b2b;
+}
+
+QWidget#central_widget { /* Targeting the central widget for padding */
+    padding: 10px;
+}
+"""
+    app.setStyleSheet(QSS)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
