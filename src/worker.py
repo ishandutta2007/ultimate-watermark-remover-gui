@@ -110,6 +110,18 @@ def main():
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             print(f"DEBUG: Video total frames: {total_frames}")
             
+            # Create subfolders for frames
+            video_basename = os.path.splitext(os.path.basename(video_to_be_edited_path))[0]
+            output_frames_dir = os.path.join(os.path.dirname(video_to_be_edited_path), f"{video_basename}_frames")
+            original_frames_dir = os.path.join(output_frames_dir, "original_frames")
+            processed_frames_dir = os.path.join(output_frames_dir, "processed_frames")
+
+            os.makedirs(original_frames_dir, exist_ok=True)
+            os.makedirs(processed_frames_dir, exist_ok=True)
+            print(f"DEBUG: Original frames will be saved to: {original_frames_dir}")
+            print(f"DEBUG: Processed frames will be saved to: {processed_frames_dir}")
+
+
             output_video_path = video_to_be_edited_path.replace(".", "_processed.")
             fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
             out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
@@ -120,9 +132,16 @@ def main():
                 if not ret:
                     break
                 
+                # Save original frame
+                original_frame_path = os.path.join(original_frames_dir, f"frame_{processed_frames:05d}.jpg")
+                cv2.imwrite(original_frame_path, frame)
+
                 processed_frame = remove_watermark_from_frame(frame, watermark_mask_applied_path)
                 if processed_frame is not None:
                     out.write(processed_frame)
+                    # Save processed frame
+                    processed_frame_path = os.path.join(processed_frames_dir, f"frame_{processed_frames:05d}.jpg")
+                    cv2.imwrite(processed_frame_path, processed_frame)
                 
                 processed_frames += 1
                 if total_frames > 0: 
