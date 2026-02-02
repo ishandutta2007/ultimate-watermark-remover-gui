@@ -51,14 +51,19 @@ def main():
     print(f"Color received: {hex_color}")
     print(f"Tolerance received: {tolerance}")
 
-    # Determine if the primary input is an image or video
-    # Assuming "watermark_mask_deleted_path" is for image processing
-    # and "video_to_be_edited_path" is for video processing
-    
-    # Image processing part
-    if watermark_mask_deleted_path and os.path.exists(watermark_mask_deleted_path):
-        print(f"Processing image: {watermark_mask_deleted_path}")
-        try:
+    color = (255, 255, 255)  # Default to white
+    hex_color = hex_color.lstrip('#')
+    try:
+        color = tuple(int(hex_color[i:i+2], 16) for i in (4, 2, 0))
+    except ValueError:
+        print("Invalid color format. Using default color (white).")
+
+
+    try:
+        # Image processing part
+        # Check if the path exists and is a file, and if it's not a video path that is also provided
+        if watermark_mask_deleted_path and os.path.exists(watermark_mask_deleted_path) and not (video_to_be_edited_path and os.path.exists(video_to_be_edited_path) and video_to_be_edited_path.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))): # Added explicit video file check
+            print(f"DEBUG: Entering image processing block for {watermark_mask_deleted_path}")
             img = cv2.imread(watermark_mask_deleted_path)
             if img is None:
                 print(f"Error: Could not open or find the image at {watermark_mask_deleted_path}")
@@ -69,15 +74,12 @@ def main():
                 output_path = watermark_mask_deleted_path.replace(".", "_processed.")
                 cv2.imwrite(output_path, processed_img)
                 print(f"Processed image saved to: {output_path}")
+            print("PROGRESS:100")
+            sys.stdout.flush()
 
-        except Exception as e:
-            print(f"An error occurred during image processing: {e}")
-            sys.exit(1)
-
-    # Video processing part
-    if video_to_be_edited_path and os.path.exists(video_to_be_edited_path):
-        print(f"Processing video: {video_to_be_edited_path}")
-        try:
+        # Video processing part
+        elif video_to_be_edited_path and os.path.exists(video_to_be_edited_path) and video_to_be_edited_path.lower().endswith(('.mp4', '.avi', '.mov', '.mkv')): # Added explicit video file check
+            print(f"DEBUG: Entering video processing block for {video_to_be_edited_path}")
             cap = cv2.VideoCapture(video_to_be_edited_path)
             if not cap.isOpened():
                 print(f"Error: Could not open video file at {video_to_be_edited_path}")
@@ -85,7 +87,9 @@ def main():
 
             frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            fps = int(cap.get(cv2.CAP_PROP_FPS))
+            fps = cap.get(cv2.CAP_PROP_FPS) # Use float for FPS
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            print(f"DEBUG: Video total frames: {total_frames}")
             
             # Define the codec and create VideoWriter object
             # For .mp4, use 'mp4v' or 'XVID'. For other formats, adjust accordingly.
@@ -93,6 +97,7 @@ def main():
             fourcc = cv2.VideoWriter_fourcc(*'mp4v') # You might need to change this based on your system and desired output format
             out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
 
+            processed_frames = 0
             while True:
                 ret, frame = cap.read()
                 if not ret:
@@ -102,16 +107,24 @@ def main():
                 if processed_frame is not None:
                     out.write(processed_frame)
                 
+                processed_frames += 1
+                if total_frames > 0: # Avoid division by zero
+                    progress = int((processed_frames / total_frames) * 100)
+                    print(f"PROGRESS:{progress}")
+                    sys.stdout.flush()
+                
             cap.release()
             out.release()
             print(f"Processed video saved to: {output_video_path}")
-
-        except Exception as e:
-            print(f"An error occurred during video processing: {e}")
+            print("PROGRESS:100")
+            sys.stdout.flush()
+        else:
+            print("Error: No valid image or video path provided for processing.")
             sys.exit(1)
-            
+
+    except Exception as e:
+        print(f"An error occurred during processing: {e}")
+        sys.exit(1)
+
     print("Worker process finished successfully.")
     sys.stdout.flush()
-
-if __name__ == "__main__":
-    main()
