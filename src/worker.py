@@ -1,33 +1,62 @@
 import time
 import sys
+import cv2
+import numpy as np
 
 def main():
     """
-    A simple worker function that simulates a multi-step process.
-    It prints its progress to stdout and flushes the buffer to ensure
-    the parent process receives the messages in real-time.
+    A worker function that removes a watermark from an image.
     """
     print("Worker process started.")
-    steps = 5
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
         print(f"File path received: {file_path}")
     else:
         print("No file path received.")
-    
-    if len(sys.argv) > 2:
+        sys.exit(1)
+
+    color = (255, 255, 255)  # Default to white
+    if len(sys.argv) > 3:
+        hex_color = sys.argv[3]
+        print(f"Color received: {hex_color}")
+        hex_color = hex_color.lstrip('#')
         try:
-            steps = int(sys.argv[2])
-            print(f"Number of steps: {steps}")
+            color = tuple(int(hex_color[i:i+2], 16) for i in (4, 2, 0))
         except ValueError:
-            print("Invalid number of steps. Using default value (5).")
+            print("Invalid color format. Using default color (white).")
 
-    sys.stdout.flush()
+    tolerance = 10
+    if len(sys.argv) > 4:
+        try:
+            tolerance = int(sys.argv[4])
+            print(f"Tolerance received: {tolerance}")
+        except ValueError:
+            print("Invalid tolerance value. Using default value (10).")
 
-    for i in range(steps):
-        print(f"Processing step {i + 1}/{steps}...")
-        sys.stdout.flush()
-        time.sleep(1)
+
+    try:
+        # Load the image
+        img = cv2.imread(file_path)
+        if img is None:
+            print(f"Error: Could not open or find the image at {file_path}")
+            sys.exit(1)
+
+        # Create a mask of the watermark
+        lower = np.array([max(0, c - tolerance) for c in color], dtype=np.uint8)
+        upper = np.array([min(255, c + tolerance) for c in color], dtype=np.uint8)
+        mask = cv2.inRange(img, lower, upper)
+
+        # Use inpainting to remove the watermark
+        dst = cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA)
+
+        # Save the processed image
+        output_path = file_path.replace(".", "_processed.")
+        cv2.imwrite(output_path, dst)
+        print(f"Processed image saved to: {output_path}")
+
+    except Exception as e:
+        print(f"An error occurred during image processing: {e}")
+        sys.exit(1)
 
     print("Worker process finished successfully.")
     sys.stdout.flush()
