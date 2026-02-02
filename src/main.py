@@ -53,15 +53,6 @@ class MainWindow(QMainWindow):
         )
         self.video_to_be_edited_path_display.setText("videos/sample_video.mp4")
 
-        # Steps input
-        self.steps_layout = QHBoxLayout()
-        self.steps_label = QLabel("Processing Steps:")
-        self.steps_input = QSpinBox()
-        self.steps_input.setMinimum(1)
-        self.steps_input.setValue(5)
-        self.steps_layout.addWidget(self.steps_label)
-        self.steps_layout.addWidget(self.steps_input)
-
         # Progress label
         self.progress_label = QLabel("")
         self.progress_label.setAlignment(Qt.AlignCenter)
@@ -85,7 +76,6 @@ class MainWindow(QMainWindow):
         self.layout.addLayout(
             self.watermark_mask_deleted_layout
         )  # Now watermark template
-        self.layout.addLayout(self.steps_layout)
         self.layout.addWidget(self.progress_label)
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
@@ -188,7 +178,7 @@ class MainWindow(QMainWindow):
                 watermark_template_path,
                 "",  # watermark_mask_applied_path (now ignored)
                 media_to_be_edited_path,
-                str(self.steps_input.value()),
+                "", # steps (now ignored)
                 "",
                 "",
             ],

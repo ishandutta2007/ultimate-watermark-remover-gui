@@ -46,9 +46,9 @@ def main():
     """
     print("Worker process started.")
 
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 4:
         print(
-            "Error: Missing arguments. Expected: watermark_template_path, watermark_mask_applied_path, media_to_be_edited_path, steps"
+            "Error: Missing arguments. Expected: watermark_template_path, watermark_mask_applied_path, media_to_be_edited_path"
         )
         sys.exit(1)
 
@@ -57,14 +57,12 @@ def main():
         2
     ]  # This will be ignored as per user's request
     media_to_be_edited_path = sys.argv[3]  # This will be the image or video input
-    steps = int(sys.argv[4])  # Currently not used for image/video processing
 
     print(f"Watermark template path: {watermark_template_path}")
     print(
         f"Watermark mask (image to be applied) path (ignored): {watermark_mask_applied_path}"
     )
     print(f"Media to be edited path: {media_to_be_edited_path}")
-    print(f"Processing steps: {steps}")
 
     try:
         if media_to_be_edited_path and os.path.exists(media_to_be_edited_path):
