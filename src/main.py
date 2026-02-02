@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
             "watermark template:", "Select image file (e.g., .jpg, .png)...",
             "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"
         )
-        self.watermark_mask_deleted_path_display.setText("masks/notebookllm_mask.jpg")
+        self.watermark_mask_deleted_path_display.setText("masks/notebookllm_mask.png")
 
         # File input for "video to be edited" (now media to be edited)
         (self.video_to_be_edited_layout, self.video_to_be_edited_path_display,

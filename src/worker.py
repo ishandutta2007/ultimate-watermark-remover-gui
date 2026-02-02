@@ -31,35 +31,61 @@ def remove_watermark_from_frame(frame, mask_path):
     dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
     return dst
 
-def remove_watermark_from_image_using_template(frame, watermark_template_path, threshold=0.8):
-    """
-    Removes a watermark from a single frame using template matching.
-    """
-    if frame is None:
-        return None
+def remove_watermark_from_image_using_template(image_path, mask_path, inpaint_radius=3):
+    print(image_path, "=>", mask_path)
+    img = cv2.imread(image_path)
+    if img is None:
+        print(f"Error: Could not load image from {image_path}")
+        return
 
-    # Load the watermark template
-    watermark_template = cv2.imread(watermark_template_path, cv2.IMREAD_COLOR)
-    if watermark_template is None:
-        print(f"Error: Could not open or find the watermark template at {watermark_template_path}")
-        return frame # Return original frame if template not found
+    mask_with_alpha = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
+    if mask_with_alpha is None:
+        print(f"Error: Could not load mask from {mask_path}")
+        return
 
-    # Convert frame and template to grayscale for template matching
-    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    watermark_template_gray = cv2.cvtColor(watermark_template, cv2.COLOR_BGR2GRAY)
+    if mask_with_alpha.shape[2] == 4:  # Check for alpha channel
+        # Use the alpha channel as the mask
+        _, mask = cv2.threshold(mask_with_alpha[:, :, 3], 1, 255, cv2.THRESH_BINARY)
+    else:
+        # Fallback to grayscale if no alpha channel
+        mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
 
-    # Perform template matching
-    res = cv2.matchTemplate(frame_gray, watermark_template_gray, cv2.TM_CCOEFF_NORMED)
-    loc = np.where(res >= threshold)
+    # Using Telea's method (cv2.INPAINT_TELEA) for potentially better speed
+    result = cv2.inpaint(img, mask, inpaint_radius, cv2.INPAINT_TELEA)
 
-    # Create a mask for the detected watermark areas
-    mask = np.zeros(frame.shape[:2], dtype="uint8")
-    for pt in zip(*loc[::-1]): # Switch x and y coordinates
-        cv2.rectangle(mask, pt, (pt[0] + watermark_template.shape[1], pt[1] + watermark_template.shape[0]), 255, -1)
+    return result
 
-    # Use inpainting to remove the watermark
-    dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
-    return dst
+
+# def remove_watermark_from_image_using_template(frame, watermark_template_path, threshold=0.8):
+#     """
+#     Removes a watermark from a single frame using template matching.
+#     """
+#     if frame is None:
+#         return None
+
+#     # Load the watermark template
+#     watermark_template = cv2.imread(watermark_template_path, cv2.IMREAD_COLOR)
+#     if watermark_template is None:
+#         print(f"Error: Could not open or find the watermark template at {watermark_template_path}")
+#         return frame # Return original frame if template not found
+
+#     # Convert frame and template to grayscale for template matching
+#     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#     watermark_template_gray = cv2.cvtColor(watermark_template, cv2.COLOR_BGR2GRAY)
+
+#     # Perform template matching
+#     res = cv2.matchTemplate(frame_gray, watermark_template_gray, cv2.TM_CCOEFF_NORMED)
+#     loc = np.where(res >= threshold)
+
+#     # Create a mask for the detected watermark areas
+#     mask = np.zeros(frame.shape[:2], dtype="uint8")
+#     for pt in zip(*loc[::-1]): # Switch x and y coordinates
+#         cv2.rectangle(mask, pt, (pt[0] + watermark_template.shape[1], pt[1] + watermark_template.shape[0]), 255, -1)
+
+#     # Use inpainting to remove the watermark
+#     dst = cv2.inpaint(frame, mask, 3, cv2.INPAINT_TELEA)
+#     return dst
 
 def main():
     """
@@ -134,7 +160,7 @@ def main():
                     original_frame_path = os.path.join(original_frames_dir, f"frame_{processed_frames:05d}.jpg")
                     cv2.imwrite(original_frame_path, frame)
 
-                    processed_frame = remove_watermark_from_image_using_template(frame, watermark_template_path, threshold=tolerance/100.0)
+                    processed_frame = remove_watermark_from_image_using_template(original_frame_path, watermark_template_path)#, threshold=tolerance/100.0)
                     if processed_frame is not None:
                         out.write(processed_frame)
                         # Save processed frame
@@ -160,7 +186,7 @@ def main():
                     print(f"Error: Could not open or find the image at {media_to_be_edited_path}")
                     sys.exit(1)
                 
-                processed_img = remove_watermark_from_image_using_template(img, watermark_template_path, threshold=tolerance/100.0)
+                processed_img = remove_watermark_from_image_using_template(img, watermark_template_path)#, threshold=tolerance/100.0)
                 if processed_img is not None:
                     output_path = media_to_be_edited_path.replace(".", "_processed.")
                     cv2.imwrite(output_path, processed_img)
