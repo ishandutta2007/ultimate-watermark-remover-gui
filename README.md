@@ -1,4 +1,5 @@
-# Ultimate Vocal Remover GUI
+# Ultimate Watermark Remover GUI
+
 <img src="https://raw.githubusercontent.com/ishandutta2007/ultimate-watermark-remover-gui/master/gui_data/img/UWR_v5.6.png?raw=true" />
 
 [![Release](https://img.shields.io/github/release/anjok07/ultimate-watermark-remover-gui.svg)](https://github.com/anjok07/ultimate-watermark-remover-gui/releases/latest)
@@ -6,7 +7,7 @@
 
 ## About
 
-This application uses state-of-the-art source separation models to remove vocals from audio files. UWR's core developers trained all of the models provided in this package (except for the Demucs v3 and v4 4-stem models).
+This application uses state-of-the-art source separation models to remove watermarks from audio files. UWR's core developers trained all of the models provided in this package (except for the Demucs v3 and v4 4-stem models).
 
 - **Core Developers**
     - [ishandutta2007](https://github.com/anjok07)
@@ -230,6 +231,7 @@ If you encounter issues, refer to the [GitHub Issues](https://github.com/ishandu
 </details>
 
 ### Other Application Notes
+
 - Nvidia GTX 1060 6GB is the minimum requirement for GPU conversions.
 - Nvidia GPUs with at least 8GBs of V-RAM are recommended.
 - AMD Radeon GPU supported is limited at this time.
@@ -242,6 +244,7 @@ If you encounter issues, refer to the [GitHub Issues](https://github.com/ishandu
 - These models are computationally intensive. 
 
 ### Performance:
+
 - Model load times are faster.
 - Importing/exporting audio files is faster.
 
@@ -253,6 +256,7 @@ If you encounter issues, refer to the [GitHub Issues](https://github.com/ishandu
 - Memory allocation errors can usually be resolved by lowering the "Segment" or "Window" sizes.
 
 #### MacOS Sonoma Left-click Bug
+
 There's a known issue on MacOS Sonoma where left-clicks aren't registering correctly within the app. This was impacting all applications built with Tkinter on Sonoma and has since been resolved. Please download the latest version via the following link if you are still experiencing issues - [link](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases/tag/v5.6)
 
 This issue was being tracked [here](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/issues/840).
