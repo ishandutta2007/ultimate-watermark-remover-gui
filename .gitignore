@@ -133,3 +133,6 @@ venv.bak/
 
 # Pyre type checker
 .pyre/
+
+#videos
+videos/*_processed.mp4
