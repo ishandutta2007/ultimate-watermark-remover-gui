@@ -136,3 +136,9 @@ venv.bak/
 
 #videos
 videos/*_processed.mp4
+videos/*_processed.mov
+videos/*_processed.mkv
+videos/*_processed.avi
+videos/*_processed.webm
+videos/*_processed.wmv
+videos/*_processed.flv
