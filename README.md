@@ -136,3 +136,10 @@ This project is proudly released under the generous [MIT License](LICENSE). Feel
 
 Got questions? Encountered a snag? Need assistance?
 Please visit our [GitHub Issues page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/issues) for help and discussions. We're here to support you!
+
+
+---
+
+### ✨ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ishandutta2007/ultimate-watermark-remover-gui&type=date&legend=top-left)](https://www.star-history.com/#ishandutta2007/ultimate-watermark-remover-gui&type=date&legend=top-left)
