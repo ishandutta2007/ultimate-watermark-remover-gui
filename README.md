@@ -28,4 +28,4 @@ Run the main application:
 python src/main.py
 ```
 
-Provide the path to the media you want to edit and the watermark template image. The application will then process the media and save the output in the same directory as the input file with an `_unmasked` suffix.
+Provide the path to the media you want to edit and the watermark mask image. The application will then process the media and save the output in the same directory as the input file with an `_unmasked` suffix.

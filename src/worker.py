@@ -52,7 +52,7 @@ def main():
         )
         sys.exit(1)
 
-    watermark_template_path = sys.argv[1]  # This will be the watermark template input
+    watermark_template_path = sys.argv[1]  # This will be the watermark mask input
     watermark_mask_applied_path = sys.argv[
         2
     ]  # This will be ignored as per user's request

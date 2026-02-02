@@ -29,13 +29,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
         self.layout = QVBoxLayout(self.central_widget)
 
-        # File input for "watermark mask to be deleted" (now watermark template)
+        # File input for "watermark mask to be deleted" (now watermark mask)
         (
             self.watermark_mask_deleted_layout,
             self.watermark_mask_deleted_path_display,
             self.watermark_mask_deleted_browse_button,
         ) = self._create_file_input(
-            "watermark template:",
+            "watermark mask:",
             "Select image file (e.g., .jpg, .png)...",
             "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)",
         )
@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
         self.layout.addLayout(self.video_to_be_edited_layout)  # Now media to be edited
         self.layout.addLayout(
             self.watermark_mask_deleted_layout
-        )  # Now watermark template
+        )  # Now watermark mask
         self.layout.addWidget(self.progress_label)
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
@@ -139,7 +139,7 @@ class MainWindow(QMainWindow):
 
         if not (watermark_template_path and media_to_be_edited_path):
             self.log_display.append(
-                "Please select both a watermark template and a media file to be edited."
+                "Please select both a watermark mask and a media file to be edited."
             )
             return
 
@@ -149,7 +149,7 @@ class MainWindow(QMainWindow):
             and (self.is_image_file(watermark_template_path))
         ):
             self.log_display.append(
-                "Please provide a valid image file for the watermark template."
+                "Please provide a valid image file for the watermark mask."
             )
             return
         if not (
