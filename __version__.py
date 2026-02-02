@@ -1,4 +1,0 @@
-VERSION = "v0"
-PATCH = "UWR_Patch_9_29_23_1_39"
-PATCH_MAC = "UWR_Patch_9_29_23_1_39"
-PATCH_LINUX = "UWR_Patch_9_29_23_1_39"

@@ -12,8 +12,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QSpinBox,
     QLabel,
-    QColorDialog,
-    QSlider,
     QProgressBar,
 )
 from PySide6.QtGui import QColor
@@ -65,29 +63,6 @@ class MainWindow(QMainWindow):
         self.steps_layout.addWidget(self.steps_label)
         self.steps_layout.addWidget(self.steps_input)
 
-        # Color selection
-        self.color_layout = QHBoxLayout()
-        self.color_label = QLabel("Watermark Color (ignored):")
-        self.color_button = QPushButton("Select Color")
-        self.color_display = QLabel()
-        self.color_display.setFixedSize(20, 20)
-        self.selected_color = QColor("white")
-        self.update_color_display()
-        self.color_layout.addWidget(self.color_label)
-        self.color_layout.addWidget(self.color_button)
-        self.color_layout.addWidget(self.color_display)
-
-        # Tolerance slider
-        self.tolerance_layout = QHBoxLayout()
-        self.tolerance_label = QLabel("Detection Threshold (0-100):")
-        self.tolerance_slider = QSlider(Qt.Horizontal)
-        self.tolerance_slider.setRange(0, 100)
-        self.tolerance_slider.setValue(80)  # Default for template matching threshold
-        self.tolerance_value_label = QLabel("80")
-        self.tolerance_layout.addWidget(self.tolerance_label)
-        self.tolerance_layout.addWidget(self.tolerance_slider)
-        self.tolerance_layout.addWidget(self.tolerance_value_label)
-
         # Progress bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
@@ -108,8 +83,6 @@ class MainWindow(QMainWindow):
             self.watermark_mask_deleted_layout
         )  # Now watermark template
         self.layout.addLayout(self.steps_layout)
-        self.layout.addLayout(self.color_layout)
-        self.layout.addLayout(self.tolerance_layout)
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
         self.layout.addWidget(self.start_button)
@@ -131,8 +104,6 @@ class MainWindow(QMainWindow):
                 "Media Files (*.mp4 *.avi *.mov *.mkv *.png *.jpg *.jpeg *.bmp *.gif)",
             )
         )
-        self.color_button.clicked.connect(self.open_color_dialog)
-        self.tolerance_slider.valueChanged.connect(self.update_tolerance_label)
         self.start_button.clicked.connect(self.start_worker_process)
         self.process.readyReadStandardOutput.connect(self.handle_stdout)
         self.process.finished.connect(self.handle_finished)
@@ -156,20 +127,6 @@ class MainWindow(QMainWindow):
         )
         if file_path:
             path_display_widget.setText(file_path)
-
-    def open_color_dialog(self):
-        color = QColorDialog.getColor()
-        if color.isValid():
-            self.selected_color = color
-            self.update_color_display()
-
-    def update_color_display(self):
-        self.color_display.setStyleSheet(
-            f"background-color: {self.selected_color.name()}"
-        )
-
-    def update_tolerance_label(self, value):
-        self.tolerance_value_label.setText(str(value))
 
     def update_progress_bar(self, value):
         self.progress_bar.setValue(value)
@@ -227,8 +184,8 @@ class MainWindow(QMainWindow):
                 "",  # watermark_mask_applied_path (now ignored)
                 media_to_be_edited_path,
                 str(self.steps_input.value()),
-                self.selected_color.name(),
-                str(self.tolerance_slider.value()),
+                "",
+                "",
             ],
         )
 
@@ -269,4 +226,12 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
-    sys.exit(app.exec())
+    try:
+        exit_code = app.exec()
+        print(f"Application finished with exit code: {exit_code}")
+        sys.exit(exit_code)
+    except Exception as e:
+        print(f"An exception occurred: {e}")
+        import traceback
+        traceback.print_exc()
+

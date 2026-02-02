@@ -144,6 +144,6 @@ videos/*_unmasked.wmv
 videos/*_unmasked.flv
 
 videos/**/*.jpg
-
+videos/*_frames/
 
 */*.bak
