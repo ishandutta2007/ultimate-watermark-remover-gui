@@ -33,18 +33,26 @@ class MainWindow(QMainWindow):
         self.layout = QVBoxLayout(self.central_widget)
 
         # File input for "watermark mask to be deleted" (now watermark template)
-        (self.watermark_mask_deleted_layout, self.watermark_mask_deleted_path_display,
-         self.watermark_mask_deleted_browse_button) = self._create_file_input(
-            "watermark template:", "Select image file (e.g., .jpg, .png)...",
-            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"
+        (
+            self.watermark_mask_deleted_layout,
+            self.watermark_mask_deleted_path_display,
+            self.watermark_mask_deleted_browse_button,
+        ) = self._create_file_input(
+            "watermark template:",
+            "Select image file (e.g., .jpg, .png)...",
+            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)",
         )
         self.watermark_mask_deleted_path_display.setText("masks/notebookllm_mask.png")
 
         # File input for "video to be edited" (now media to be edited)
-        (self.video_to_be_edited_layout, self.video_to_be_edited_path_display,
-         self.video_to_be_edited_browse_button) = self._create_file_input(
-            "media to be edited:", "Select video or image file (e.g., .mp4, .avi, .jpg, .png)...",
-            "Media Files (*.mp4 *.avi *.mov *.mkv *.png *.jpg *.jpeg *.bmp *.gif)"
+        (
+            self.video_to_be_edited_layout,
+            self.video_to_be_edited_path_display,
+            self.video_to_be_edited_browse_button,
+        ) = self._create_file_input(
+            "media to be edited:",
+            "Select video or image file (e.g., .mp4, .avi, .jpg, .png)...",
+            "Media Files (*.mp4 *.avi *.mov *.mkv *.png *.jpg *.jpeg *.bmp *.gif)",
         )
         self.video_to_be_edited_path_display.setText("videos/sample_video.mp4")
 
@@ -74,7 +82,7 @@ class MainWindow(QMainWindow):
         self.tolerance_label = QLabel("Detection Threshold (0-100):")
         self.tolerance_slider = QSlider(Qt.Horizontal)
         self.tolerance_slider.setRange(0, 100)
-        self.tolerance_slider.setValue(80) # Default for template matching threshold
+        self.tolerance_slider.setValue(80)  # Default for template matching threshold
         self.tolerance_value_label = QLabel("80")
         self.tolerance_layout.addWidget(self.tolerance_label)
         self.tolerance_layout.addWidget(self.tolerance_slider)
@@ -88,13 +96,17 @@ class MainWindow(QMainWindow):
         # UI Elements
         self.log_display = QTextEdit()
         self.log_display.setReadOnly(True)
-        self.log_display.setPlaceholderText("Output from the script will appear here...")
+        self.log_display.setPlaceholderText(
+            "Output from the script will appear here..."
+        )
 
         self.start_button = QPushButton("Start Processing")
 
         # Add widgets to layout
-        self.layout.addLayout(self.video_to_be_edited_layout) # Now media to be edited
-        self.layout.addLayout(self.watermark_mask_deleted_layout) # Now watermark template
+        self.layout.addLayout(self.video_to_be_edited_layout)  # Now media to be edited
+        self.layout.addLayout(
+            self.watermark_mask_deleted_layout
+        )  # Now watermark template
         self.layout.addLayout(self.steps_layout)
         self.layout.addLayout(self.color_layout)
         self.layout.addLayout(self.tolerance_layout)
@@ -108,12 +120,16 @@ class MainWindow(QMainWindow):
 
         # Connect signals
         self.watermark_mask_deleted_browse_button.clicked.connect(
-            lambda: self.open_file_dialog(self.watermark_mask_deleted_path_display,
-                                          "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)")
+            lambda: self.open_file_dialog(
+                self.watermark_mask_deleted_path_display,
+                "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)",
+            )
         )
         self.video_to_be_edited_browse_button.clicked.connect(
-            lambda: self.open_file_dialog(self.video_to_be_edited_path_display,
-                                          "Media Files (*.mp4 *.avi *.mov *.mkv *.png *.jpg *.jpeg *.bmp *.gif)")
+            lambda: self.open_file_dialog(
+                self.video_to_be_edited_path_display,
+                "Media Files (*.mp4 *.avi *.mov *.mkv *.png *.jpg *.jpeg *.bmp *.gif)",
+            )
         )
         self.color_button.clicked.connect(self.open_color_dialog)
         self.tolerance_slider.valueChanged.connect(self.update_tolerance_label)
@@ -135,7 +151,9 @@ class MainWindow(QMainWindow):
         return layout, path_display, browse_button
 
     def open_file_dialog(self, path_display_widget, file_filter):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Select a File", "", file_filter)
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Select a File", "", file_filter
+        )
         if file_path:
             path_display_widget.setText(file_path)
 
@@ -146,7 +164,9 @@ class MainWindow(QMainWindow):
             self.update_color_display()
 
     def update_color_display(self):
-        self.color_display.setStyleSheet(f"background-color: {self.selected_color.name()}")
+        self.color_display.setStyleSheet(
+            f"background-color: {self.selected_color.name()}"
+        )
 
     def update_tolerance_label(self, value):
         self.tolerance_value_label.setText(str(value))
@@ -159,33 +179,58 @@ class MainWindow(QMainWindow):
         media_to_be_edited_path = self.video_to_be_edited_path_display.text()
 
         # Simplified check for demonstration. In a real app, you might want more robust validation.
-        is_image_processing = watermark_template_path and self.is_image_file(watermark_template_path)
-        is_video_processing = media_to_be_edited_path and self.is_video_file(media_to_be_edited_path)
+        is_image_processing = watermark_template_path and self.is_image_file(
+            watermark_template_path
+        )
+        is_video_processing = media_to_be_edited_path and self.is_video_file(
+            media_to_be_edited_path
+        )
 
         if not (watermark_template_path and media_to_be_edited_path):
-            self.log_display.append("Please select both a watermark template and a media file to be edited.")
+            self.log_display.append(
+                "Please select both a watermark template and a media file to be edited."
+            )
             return
 
         # Check if paths are valid files
-        if not (os.path.exists(watermark_template_path) and (self.is_image_file(watermark_template_path))):
-            self.log_display.append("Please provide a valid image file for the watermark template.")
+        if not (
+            os.path.exists(watermark_template_path)
+            and (self.is_image_file(watermark_template_path))
+        ):
+            self.log_display.append(
+                "Please provide a valid image file for the watermark template."
+            )
             return
-        if not (os.path.exists(media_to_be_edited_path) and (self.is_image_file(media_to_be_edited_path) or self.is_video_file(media_to_be_edited_path))):
-            self.log_display.append("Please provide a valid image or video file for media to be edited.")
+        if not (
+            os.path.exists(media_to_be_edited_path)
+            and (
+                self.is_image_file(media_to_be_edited_path)
+                or self.is_video_file(media_to_be_edited_path)
+            )
+        ):
+            self.log_display.append(
+                "Please provide a valid image or video file for media to be edited."
+            )
             return
 
-        self.progress_bar.setValue(0) # Reset progress bar
+        self.progress_bar.setValue(0)  # Reset progress bar
         self.log_display.clear()
         self.log_display.append("Starting worker process...")
         self.start_button.setEnabled(False)
         # We use python -u for unbuffered output
-        self.process.start("python", ["-u", "src/worker.py",
-                                      watermark_template_path,
-                                      "", # watermark_mask_applied_path (now ignored)
-                                      media_to_be_edited_path,
-                                      str(self.steps_input.value()),
-                                      self.selected_color.name(),
-                                      str(self.tolerance_slider.value())])
+        self.process.start(
+            "python",
+            [
+                "-u",
+                "src/worker.py",
+                watermark_template_path,
+                "",  # watermark_mask_applied_path (now ignored)
+                media_to_be_edited_path,
+                str(self.steps_input.value()),
+                self.selected_color.name(),
+                str(self.tolerance_slider.value()),
+            ],
+        )
 
     def handle_stdout(self):
         data = self.process.readAllStandardOutput()
@@ -198,18 +243,18 @@ class MainWindow(QMainWindow):
                 progress_value = int(stdout.split(":")[1])
                 self.update_progress_bar(progress_value)
             except ValueError:
-                pass # Ignore malformed progress messages
+                pass  # Ignore malformed progress messages
 
     def handle_finished(self, exit_code, exit_status):
         status = "finished" if exit_status == QProcess.NormalExit else "crashed"
         self.log_display.append(f"Process {status} with exit code: {exit_code}.")
         self.start_button.setEnabled(True)
-        self.progress_bar.setValue(0) # Reset or set to 100 upon completion
+        self.progress_bar.setValue(0)  # Reset or set to 100 upon completion
 
     def handle_error(self, error):
         self.log_display.append(f"An error occurred: {error.name}")
         self.start_button.setEnabled(True)
-        self.progress_bar.setValue(0) # Reset on error
+        self.progress_bar.setValue(0)  # Reset on error
 
     def is_image_file(self, path):
         image_extensions = (".png", ".jpg", ".jpeg", ".bmp", ".gif")
