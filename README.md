@@ -17,43 +17,12 @@ This application uses state-of-the-art source separation models to remove waterm
 
 ## Installation
 
-These bundles contain the UWR interface, Python, PyTorch, and other dependencies needed to run the application effectively. No prerequisites are required.
-
-### Windows Installation
-
-- Please Note:
-    - This installer is intended for those running Windows 10 or higher. 
-    - Application functionality for systems running Windows 7 or lower is not guaranteed.
-    - Application functionality for Intel Pentium & Celeron CPUs systems is not guaranteed.
-    - You must install UWR to the main C:\ drive. Installing UWR to a secondary drive will cause instability.
-
-- Download the UWR installer for Windows via the link below:
-    - [Main Download Link](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases/download/v0/UWR_v0_setup.exe)
-    - [Main Download Link mirror](https://www.mediafire.com/file_premium/jiatpgp0ljou52p/UWR_v0_setup.exe/file)
-- If you use an **AMD Radeon or Intel Arc graphics card**, you can try the DirectML version:
-    - [DirectML Version - Main Download Link](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases/download/v0/UWR_1_15_25_22_30_BETA_full.exe)
-
-<details id="WindowsManual">
-  <summary>Windows Manual Installation</summary>
-
-### Manual Windows Installation
-
-- Download and extract the repository [here](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/archive/refs/heads/master.zip)
-- Download and install Python [here](https://www.python.org/ftp/python/3.9.8/python-3.9.8-amd64.exe)
-   - Make sure to check "Add python.exe to PATH" during the install
-- Run the following commands from the extracted repo directory:
-
 ```
-python.exe -m pip install -r requirements.txt
+git clone https://github.com/ishandutta2007/ultimate-watermark-remover-gui.git
+pyenv install 3.10.11
+pip install -r requirements.txt
 ```
 
-If you have a compatible Nvidia GPU, run the following command:
-
-```
-python.exe -m pip install --upgrade torch --extra-index-url https://download.pytorch.org/whl/cu117
-```
-
-If you do not have FFmpeg or Rubber Band installed and want to avoid going through the process of installing them the long way, follow the instructions below.
 
 **FFmpeg Installation**
 
