@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
             "watermark mask to be deleted:", "Select image file (e.g., .jpg, .png)...",
             "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"
         )
+        self.watermark_mask_deleted_path_display.setText("masks/notebookllm_mask.jpg")
 
         # File input for "watermark mask to be applied"
         (self.watermark_mask_applied_layout, self.watermark_mask_applied_path_display,
@@ -43,6 +44,7 @@ class MainWindow(QMainWindow):
             "watermark mask to be applied:", "Select image file (e.g., .jpg, .png)...",
             "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"
         )
+        self.watermark_mask_applied_path_display.setText("masks/newlogo_mask.png")
 
         # File input for "video to be edited"
         (self.video_to_be_edited_layout, self.video_to_be_edited_path_display,
@@ -50,6 +52,7 @@ class MainWindow(QMainWindow):
             "video to be edited:", "Select video file (e.g., .mp4, .avi)...",
             "Video Files (*.mp4 *.avi *.mov *.mkv)"
         )
+        self.video_to_be_edited_path_display.setText("videos/sample_video.mp4")
 
         # Steps input
         self.steps_layout = QHBoxLayout()
@@ -92,9 +95,9 @@ class MainWindow(QMainWindow):
         self.start_button = QPushButton("Start Processing")
 
         # Add widgets to layout
+        self.layout.addLayout(self.video_to_be_edited_layout)
         self.layout.addLayout(self.watermark_mask_deleted_layout)
         self.layout.addLayout(self.watermark_mask_applied_layout)
-        self.layout.addLayout(self.video_to_be_edited_layout)
         self.layout.addLayout(self.steps_layout)
         self.layout.addLayout(self.color_layout)
         self.layout.addLayout(self.tolerance_layout)
