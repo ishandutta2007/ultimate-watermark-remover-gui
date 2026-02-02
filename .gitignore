@@ -135,13 +135,13 @@ venv.bak/
 .pyre/
 
 #videos
-videos/*_processed.mp4
-videos/*_processed.mov
-videos/*_processed.mkv
-videos/*_processed.avi
-videos/*_processed.webm
-videos/*_processed.wmv
-videos/*_processed.flv
+videos/*_unmasked.mp4
+videos/*_unmasked.mov
+videos/*_unmasked.mkv
+videos/*_unmasked.avi
+videos/*_unmasked.webm
+videos/*_unmasked.wmv
+videos/*_unmasked.flv
 
 videos/**/*.jpg
 

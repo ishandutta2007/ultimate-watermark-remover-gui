@@ -32,7 +32,6 @@ def remove_watermark_from_frame(frame, mask_path):
     return dst
 
 def remove_watermark_from_image_using_template(image_path, mask_path, inpaint_radius=3):
-    print(image_path, "=>", mask_path)
     img = cv2.imread(image_path)
     if img is None:
         print(f"Error: Could not load image from {image_path}")
@@ -138,44 +137,44 @@ def main():
                 video_basename = os.path.splitext(os.path.basename(media_to_be_edited_path))[0]
                 output_frames_dir = os.path.join(os.path.dirname(media_to_be_edited_path), f"{video_basename}_frames")
                 original_frames_dir = os.path.join(output_frames_dir, "original_frames")
-                processed_frames_dir = os.path.join(output_frames_dir, "processed_frames")
+                unmasked_frames_dir = os.path.join(output_frames_dir, "unmasked_frames")
 
                 os.makedirs(original_frames_dir, exist_ok=True)
-                os.makedirs(processed_frames_dir, exist_ok=True)
+                os.makedirs(unmasked_frames_dir, exist_ok=True)
                 print(f"DEBUG: Original frames will be saved to: {original_frames_dir}")
-                print(f"DEBUG: Processed frames will be saved to: {processed_frames_dir}")
+                print(f"DEBUG: Unmasked frames will be saved to: {unmasked_frames_dir}")
 
 
-                output_video_path = media_to_be_edited_path.replace(".", "_processed.")
+                output_video_path = media_to_be_edited_path.replace(".", "_unmasked.")
                 fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
                 out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
 
-                processed_frames = 0
+                unmasked_frames = 0
                 while True:
                     ret, frame = cap.read()
                     if not ret:
                         break
                     
                     # Save original frame
-                    original_frame_path = os.path.join(original_frames_dir, f"frame_{processed_frames:05d}.jpg")
+                    original_frame_path = os.path.join(original_frames_dir, f"frame_{unmasked_frames:05d}.jpg")
                     cv2.imwrite(original_frame_path, frame)
 
-                    processed_frame = remove_watermark_from_image_using_template(original_frame_path, watermark_template_path)#, threshold=tolerance/100.0)
-                    if processed_frame is not None:
-                        out.write(processed_frame)
-                        # Save processed frame
-                        processed_frame_path = os.path.join(processed_frames_dir, f"frame_{processed_frames:05d}.jpg")
-                        cv2.imwrite(processed_frame_path, processed_frame)
+                    unmasked_frame = remove_watermark_from_image_using_template(original_frame_path, watermark_template_path)#, threshold=tolerance/100.0)
+                    if unmasked_frame is not None:
+                        out.write(unmasked_frame)
+                        # Save unmasked frame
+                        unmasked_frame_path = os.path.join(unmasked_frames_dir, f"frame_{unmasked_frames:05d}.jpg")
+                        cv2.imwrite(unmasked_frame_path, unmasked_frame)
                     
-                    processed_frames += 1
+                    unmasked_frames += 1
                     if total_frames > 0: 
-                        progress = int((processed_frames / total_frames) * 100)
+                        progress = int((unmasked_frames / total_frames) * 100)
                         print(f"PROGRESS:{progress}")
                         sys.stdout.flush()
                     
                 cap.release()
                 out.release()
-                print(f"Processed video saved to: {output_video_path}")
+                print(f"Unmasked video saved to: {output_video_path}")
                 print("PROGRESS:100")
                 sys.stdout.flush()
             
@@ -186,11 +185,11 @@ def main():
                     print(f"Error: Could not open or find the image at {media_to_be_edited_path}")
                     sys.exit(1)
                 
-                processed_img = remove_watermark_from_image_using_template(img, watermark_template_path)#, threshold=tolerance/100.0)
-                if processed_img is not None:
-                    output_path = media_to_be_edited_path.replace(".", "_processed.")
-                    cv2.imwrite(output_path, processed_img)
-                    print(f"Processed image saved to: {output_path}")
+                unmasked_img = remove_watermark_from_image_using_template(img, watermark_template_path)#, threshold=tolerance/100.0)
+                if unmasked_img is not None:
+                    output_path = media_to_be_edited_path.replace(".", "_unmasked.")
+                    cv2.imwrite(output_path, unmasked_img)
+                    print(f"Unmasked image saved to: {output_path}")
                 print("PROGRESS:100")
                 sys.stdout.flush()
             else:
