@@ -103,3 +103,10 @@ This project is released under the [MIT License](LICENSE).
 
 ## Support
 For any questions, issues, or feedback, please visit our [GitHub Issues page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/issues). We're here to help!
+
+
+### ✨ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ishandutta2007/ultimate-watermark-remover-gui&type=date&legend=top-left)](https://www.star-history.com/#ishandutta2007/ultimate-watermark-remover-gui&type=date&legend=top-left)
+
+
