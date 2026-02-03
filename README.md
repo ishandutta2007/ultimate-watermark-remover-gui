@@ -120,6 +120,10 @@ For users who prefer to run the application as a standalone executable on Window
 2.  **Navigate to the project root** in your terminal.
 3.  **Run PyInstaller**: Use the following command to create a one-folder bundle (recommended for PySide6 apps) with your application:
     ```bash
+    pyinstaller UltimateWatermarkRemover.spec
+    ```
+    or
+    ```bash
     pyinstaller --noconfirm --onedir --windowed --add-data "masks;masks" --add-data "videos;videos" --add-data "__version__.py;." --name "Ultimate Watermark Remover" src/main.py
     ```
     *   `--noconfirm`: Overwrites previous builds without prompt.
@@ -129,7 +133,7 @@ For users who prefer to run the application as a standalone executable on Window
     *   `--add-data "videos;videos"`: Includes the `videos` directory.
     *   `--add-data "__version__.py;."`: Explicitly adds the version file.
     *   `--name "Ultimate Watermark Remover"`: Sets the name of the executable and its containing folder.
-4.  **Find the executable**: The generated application will be located in the `dist/Ultimate Watermark Remover/` directory.
+5.  **Find the executable**: The generated application will be located in the `dist/Ultimate Watermark Remover/` directory.
 
 ### For Non-Technical Users (Pre-built Executables) 🎁
 
