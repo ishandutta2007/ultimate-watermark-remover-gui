@@ -107,6 +107,14 @@ Observe the real-time logs and dynamic progress updates. Upon completion, your w
 
 ---
 
+## Quickstart (for Non-Technical Users (Pre-built Executables)) 🎁
+
+- Windows
+
+    If you're not comfortable with command-line tools or Python environments, you can often find pre-built, ready-to-use executable files (like `UltimateWatermarkRemover_v2.0.0.exe`) for Windows directly from the project's [GitHub Releases page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases). Simply download the latest version, extract it, and double-click the executable to launch the application!
+
+---
+
 ## 📦 Build & Distribution (for Developers & Power Users)
 
 For users who prefer to run the application as a standalone executable on Windows, the project can be bundled using [PyInstaller](https://pyinstaller.org/). This creates a double-clickable `.exe` file that includes all necessary Python dependencies, removing the need for a local Python installation or manual dependency setup for end-users.
@@ -134,10 +142,6 @@ For users who prefer to run the application as a standalone executable on Window
     *   `--add-data "__version__.py;."`: Explicitly adds the version file.
     *   `--name "Ultimate Watermark Remover"`: Sets the name of the executable and its containing folder.
 5.  **Find the executable**: The generated application will be located in the `dist/Ultimate Watermark Remover/` directory.
-
-### For Non-Technical Users (Pre-built Executables) 🎁
-
-If you're not comfortable with command-line tools or Python environments, you can often find pre-built, ready-to-use executable files (like `Ultimate Watermark Remover.exe`) for Windows directly from the project's [GitHub Releases page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases). Simply download the latest version, extract it, and double-click the executable to launch the application!
 
 ---
 
