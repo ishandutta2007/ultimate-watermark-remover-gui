@@ -16,12 +16,16 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import QProcess, Qt
 
+# Add the project root to sys.path to allow importing __version__.py
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from __version__ import __version__
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Ultimate Watermark Remover")
+        self.setWindowTitle(f"Ultimate Watermark Remover - v{__version__}")
         self.setGeometry(100, 100, 600, 400)
 
         # Main widget and layout
@@ -299,4 +303,7 @@ QWidget#central_widget { /* Targeting the central widget for padding */
     app.setStyleSheet(QSS)
     window = MainWindow()
     window.show()
-    sys.exit(app.exec())
+    exit_code = app.exec()
+    print("Application exited. Press Enter to close this console window...")
+    input() # Pause the console
+    sys.exit(exit_code)
