@@ -1,11 +1,12 @@
 import os
 import sys
 
+
 def get_resource_path(relative_path):
     """
     Get the absolute path to a resource, works for dev and for PyInstaller.
     """
-    if hasattr(sys, '_MEIPASS'):
+    if hasattr(sys, "_MEIPASS"):
         # PyInstaller creates a temporary folder and stores path in _MEIPASS
         # For one-dir mode, resources are directly in _MEIPASS
         # For one-file mode, they are also directly in _MEIPASS (or a subfolder if --add-data specified a subfolder)

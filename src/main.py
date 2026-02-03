@@ -2,7 +2,7 @@ import os
 import sys
 
 # Determine if running as part of a PyInstaller bundle
-if hasattr(sys, '_MEIPASS'):
+if hasattr(sys, "_MEIPASS"):
     # In PyInstaller bundle, the current script's directory might not be the root.
     # PyInstaller puts bundled data in sys._MEIPASS or a subdirectory.
     # For --onedir, sys.executable is path/to/dist/your_app/your_app.exe,
@@ -41,8 +41,7 @@ from PySide6.QtWidgets import (
     QProgressBar,
 )
 from PySide6.QtCore import QProcess, Qt
-import src.worker as worker # Import worker module
-
+import src.worker as worker  # Import worker module
 
 
 class MainWindow(QMainWindow):
@@ -67,7 +66,9 @@ class MainWindow(QMainWindow):
             "Select image file (e.g., .jpg, .png)...",
             "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)",
         )
-        self.watermark_mask_deleted_path_display.setText(get_resource_path("masks/notebookllm_mask.png"))
+        self.watermark_mask_deleted_path_display.setText(
+            get_resource_path("masks/notebookllm_mask.png")
+        )
 
         # File input for "video to be edited" (now media to be edited)
         (
@@ -79,7 +80,9 @@ class MainWindow(QMainWindow):
             "Select video or image file (e.mp4, .avi, .jpg, .png)...",
             "Media Files (*.mp4 *.avi *.mov *.mkv *.png *.jpg *.jpeg *.bmp *.gif)",
         )
-        self.video_to_be_edited_path_display.setText(get_resource_path("videos/sample_video.mp4"))
+        self.video_to_be_edited_path_display.setText(
+            get_resource_path("videos/sample_video.mp4")
+        )
 
         # Progress label
         self.progress_label = QLabel("")
@@ -198,38 +201,47 @@ class MainWindow(QMainWindow):
         self.log_display.append("Starting worker process...")
         self.start_button.setEnabled(False)
         # Determine the Python interpreter and arguments for the worker process
-        worker_process_args = ["-u"] # Unbuffered output
+        worker_process_args = ["-u"]  # Unbuffered output
 
-        if hasattr(sys, '_MEIPASS'):
+        if hasattr(sys, "_MEIPASS"):
             # Running as a PyInstaller executable
-            python_executable = sys.executable # The main EXE itself
+            python_executable = sys.executable  # The main EXE itself
             # The worker process will be launched via the main EXE, which then checks for '--_worker'
             worker_process_args.append("--_worker")
-            
+
         else:
             # Running in development environment
-            python_executable = sys.executable # The actual python.exe
+            python_executable = sys.executable  # The actual python.exe
             # In dev, we launch src/worker.py directly
-            worker_script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "worker.py")
+            worker_script_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "worker.py"
+            )
             worker_process_args.append(worker_script_path)
-
 
         # Add the actual arguments for worker.main()
         # These correspond to sys.argv[1], sys.argv[2], etc. in the worker process
-        worker_process_args.extend([
-            watermark_template_path,
-            "",  # watermark_mask_applied_path (now ignored)
-            media_to_be_edited_path,
-            "",  # steps (now ignored)
-            "",
-            "",
-        ])
-        
+        worker_process_args.extend(
+            [
+                watermark_template_path,
+                "",  # watermark_mask_applied_path (now ignored)
+                media_to_be_edited_path,
+                "",  # steps (now ignored)
+                "",
+                "",
+            ]
+        )
+
         # --- DEBUGGING PATHS ---
         self.log_display.append(f"DEBUG (main): python_executable: {python_executable}")
-        self.log_display.append(f"DEBUG (main): worker_process_args: {worker_process_args}")
-        self.log_display.append(f"DEBUG (main): watermark_template_path: {watermark_template_path}, exists: {os.path.exists(watermark_template_path)}")
-        self.log_display.append(f"DEBUG (main): media_to_be_edited_path: {media_to_be_edited_path}, exists: {os.path.exists(media_to_be_edited_path)}")
+        self.log_display.append(
+            f"DEBUG (main): worker_process_args: {worker_process_args}"
+        )
+        self.log_display.append(
+            f"DEBUG (main): watermark_template_path: {watermark_template_path}, exists: {os.path.exists(watermark_template_path)}"
+        )
+        self.log_display.append(
+            f"DEBUG (main): media_to_be_edited_path: {media_to_be_edited_path}, exists: {os.path.exists(media_to_be_edited_path)}"
+        )
         # --- END DEBUGGING ---
 
         self.process.start(python_executable, worker_process_args)
@@ -287,8 +299,8 @@ if __name__ == "__main__":
         # The first argument (sys.argv[0]) will be the script name (or exe name)
         # The worker's main function expects arguments starting from index 1.
         worker.main()
-        sys.exit(0) # Exit the worker process gracefully
-    
+        sys.exit(0)  # Exit the worker process gracefully
+
     app = QApplication(sys.argv)
 
     # Modern Dark Theme Stylesheet
