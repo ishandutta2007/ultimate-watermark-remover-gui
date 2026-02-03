@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import QProcess, Qt
 
 # Add the project root to sys.path to allow importing __version__.py
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from __version__ import __version__
 
 
@@ -77,9 +77,7 @@ class MainWindow(QMainWindow):
 
         # Add widgets to layout
         self.layout.addLayout(self.video_to_be_edited_layout)  # Now media to be edited
-        self.layout.addLayout(
-            self.watermark_mask_deleted_layout
-        )  # Now watermark mask
+        self.layout.addLayout(self.watermark_mask_deleted_layout)  # Now watermark mask
         self.layout.addWidget(self.progress_label)
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
@@ -169,7 +167,9 @@ class MainWindow(QMainWindow):
             return
 
         self.progress_bar.setValue(0)  # Reset progress bar
-        self.progress_label.setText("Starting processing...") # Set initial progress label
+        self.progress_label.setText(
+            "Starting processing..."
+        )  # Set initial progress label
         self.log_display.clear()
         self.log_display.append("Starting worker process...")
         self.start_button.setEnabled(False)
@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
                 watermark_template_path,
                 "",  # watermark_mask_applied_path (now ignored)
                 media_to_be_edited_path,
-                "", # steps (now ignored)
+                "",  # steps (now ignored)
                 "",
                 "",
             ],
@@ -201,20 +201,24 @@ class MainWindow(QMainWindow):
             except ValueError:
                 pass  # Ignore malformed progress messages
         elif stdout.startswith("STAGE:"):
-            self.progress_label.setText(stdout[6:].strip()) # Update progress label with stage message
+            self.progress_label.setText(
+                stdout[6:].strip()
+            )  # Update progress label with stage message
 
     def handle_finished(self, exit_code, exit_status):
         status = "finished" if exit_status == QProcess.NormalExit else "crashed"
         self.log_display.append(f"Process {status} with exit code: {exit_code}.")
         self.start_button.setEnabled(True)
         self.progress_bar.setValue(0)  # Reset or set to 100 upon completion
-        self.progress_label.setText("Finished.") # Clear progress label or set to finished
+        self.progress_label.setText(
+            "Finished."
+        )  # Clear progress label or set to finished
 
     def handle_error(self, error):
         self.log_display.append(f"An error occurred: {error.name}")
         self.start_button.setEnabled(True)
         self.progress_bar.setValue(0)  # Reset on error
-        self.progress_label.setText("Error occurred.") # Set progress label to error
+        self.progress_label.setText("Error occurred.")  # Set progress label to error
 
     def is_image_file(self, path):
         image_extensions = (".png", ".jpg", ".jpeg", ".bmp", ".gif")
@@ -305,5 +309,5 @@ QWidget#central_widget { /* Targeting the central widget for padding */
     window.show()
     exit_code = app.exec()
     print("Application exited. Press Enter to close this console window...")
-    input() # Pause the console
+    input()  # Pause the console
     sys.exit(exit_code)
