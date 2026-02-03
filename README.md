@@ -82,7 +82,7 @@ pip install -r requirements.txt
 
 ## ▶️ Usage
 
-To launch the **Ultimate Watermark Remover GUI**, navigate to the project's root directory in your terminal or command prompt and run:
+To launch the **Ultimate Watermark Remover GUI** from source, navigate to the project's root directory in your terminal or command prompt and run:
 ```bash
 python src/main.py
 ```
@@ -107,13 +107,43 @@ Observe the real-time logs and dynamic progress updates. Upon completion, your w
 
 ---
 
+## 📦 Build & Distribution (for Developers & Power Users)
+
+For users who prefer to run the application as a standalone executable on Windows, the project can be bundled using [PyInstaller](https://pyinstaller.org/). This creates a double-clickable `.exe` file that includes all necessary Python dependencies, removing the need for a local Python installation or manual dependency setup for end-users.
+
+### Building the Executable:
+
+1.  **Ensure PyInstaller is installed**:
+    ```bash
+    pip install pyinstaller
+    ```
+2.  **Navigate to the project root** in your terminal.
+3.  **Run PyInstaller**: Use the following command to create a one-folder bundle (recommended for PySide6 apps) with your application:
+    ```bash
+    pyinstaller --noconfirm --onedir --windowed --add-data "masks;masks" --add-data "videos;videos" --add-data "__version__.py;." --name "Ultimate Watermark Remover" src/main.py
+    ```
+    *   `--noconfirm`: Overwrites previous builds without prompt.
+    *   `--onedir`: Creates a single directory containing the executable and all its dependencies.
+    *   `--windowed`: Prevents a console window from appearing with the GUI.
+    *   `--add-data "masks;masks"`: Includes the `masks` directory.
+    *   `--add-data "videos;videos"`: Includes the `videos` directory.
+    *   `--add-data "__version__.py;."`: Explicitly adds the version file.
+    *   `--name "Ultimate Watermark Remover"`: Sets the name of the executable and its containing folder.
+4.  **Find the executable**: The generated application will be located in the `dist/Ultimate Watermark Remover/` directory.
+
+### For Non-Technical Users (Pre-built Executables) 🎁
+
+If you're not comfortable with command-line tools or Python environments, you can often find pre-built, ready-to-use executable files (like `Ultimate Watermark Remover.exe`) for Windows directly from the project's [GitHub Releases page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases). Simply download the latest version, extract it, and double-click the executable to launch the application!
+
+---
+
 ## ⚙️ How It Works
 
 The **Ultimate Watermark Remover GUI** orchestrates a sophisticated, multi-stage process to achieve impeccable watermark removal:
 
 1.  **Input & Precise Masking** 🎯: You provide both the media file and a crucial watermark template (mask). This mask is instrumental for OpenCV's inpainting algorithm, ensuring accurate identification and removal of unwanted elements.
 2.  **Intelligent Video Frame Extraction** (for Videos) 🎞️: When a video file is supplied, it's meticulously broken down into its constituent frames. Each frame is then treated as an individual image for processing.
-3.  **Advanced Watermark Inpainting** ✨: For every frame (or the standalone image), OpenCV's powerful inpainting algorithm is applied using the provided mask. This intelligent process reconstructs the masked region by analyzing surrounding pixel data, effectively "erasing" the watermark seamlessly.
+3.  **Advanced Watermark Inpainting** ✨: For every frame (or the standalone image), OpenCV's powerful inpainting algorithm is applied using the provided mask. This intelligently reconstructs the masked area based on surrounding pixel data, effectively "erasing" the watermark seamlessly.
 4.  **Flawless Audio Extraction & Re-integration** (for Videos) 🎤🔗: Simultaneously, if a video is being processed, FFmpeg efficiently extracts its original audio track. Once all video frames are unmasked and reassembled into a new silent video, FFmpeg then precisely merges this pristine video stream with the preserved original audio track, ensuring perfect synchronization.
 5.  **Clean Output** ✅: The final, watermark-free image or video (complete with audio, if applicable) is then saved, ready for immediate use.
 

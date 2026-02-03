@@ -308,6 +308,4 @@ QWidget#central_widget { /* Targeting the central widget for padding */
     window = MainWindow()
     window.show()
     exit_code = app.exec()
-    print("Application exited. Press Enter to close this console window...")
-    input()  # Pause the console
     sys.exit(exit_code)
