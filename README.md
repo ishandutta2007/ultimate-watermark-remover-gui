@@ -107,7 +107,7 @@ Observe the real-time logs and dynamic progress updates. Upon completion, your w
 
 ---
 
-## Quickstart (for Non-Technical Users (Pre-built Executables)) 🎁
+## 🚀 Quickstart (for Non-Technical Users (Pre-built Executables)) 🎁
 
 - Windows
 
