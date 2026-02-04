@@ -33,50 +33,15 @@ Built with Python and PySide6, this intuitive tool provides a robust solution fo
 
 ---
 
-## 🎯 Goals & Technology Stack
+## 🎯 Goals
 
 Our core mission with the **Ultimate Watermark Remover GUI** is to offer an accessible, reliable, and highly efficient solution for watermark removal. We're dedicated to helping users restore the original beauty of their visual content.
 
-### 🛠️ Technology Stack:
--   **Python**: The versatile programming language underpinning the entire application.
--   **PySide6**: Powers the responsive, modern, and cross-platform graphical user interface.
--   **OpenCV (Open Source Computer Vision Library)**: The intelligent core for all image and video frame manipulation, specializing in watermark detection and sophisticated inpainting.
--   **FFmpeg**: The indispensable command-line utility for high-performance video and audio handling, enabling seamless audio extraction, precise video stream merging, and extensive format compatibility.
-
 ---
 
-## ⚡️ Installation Guide
+## 💻 Installation
 
-### 📋 Prerequisites
-Before diving in, ensure you have:
-*   **Python 3.11.4** installed. Download it from the official [Python website](https://www.python.org/downloads/).
-*   Basic familiarity with command-line operations.
-
-### Step 1: Clone the Repository 📥
-Open your terminal or command prompt and fetch the project:
-```bash
-git clone https://github.com/ishandutta2007/ultimate-watermark-remover-gui.git
-cd ultimate-watermark-remover-gui
-```
-
-### Step 2: Install Python Dependencies 🐍
-Navigate to the project directory and install the necessary Python libraries:
-```bash
-pip install -r requirements.txt
-```
-*✨ **Pro Tip for Windows Users**: Execute `install_packages.bat` located in the root directory. This script automates dependency installation and verifies FFmpeg presence for a smoother setup.*
-
-### Step 3: FFmpeg Installation (Crucial for Video Processing!) 🎬
-**FFmpeg is absolutely essential for video watermark removal and seamless audio re-integration. Without it, the application will only be able to process images.**
-
-*   **Download FFmpeg**:
-    *   For **Windows**: Grab a precompiled build from [Gyan.dev FFmpeg Builds](https://www.gyan.dev/ffmpeg/builds/). We recommend the "release essentials" or "full" version.
-    *   For **macOS**: Install effortlessly via Homebrew: `brew install ffmpeg`. Alternatively, download binaries from [FFmpeg.org](https://ffmpeg.org/download.html).
-    *   For **Linux**: Install using your distribution's package manager (e.g., `sudo apt install ffmpeg` for Debian/Ubuntu, `sudo pacman -S ffmpeg` for Arch).
-
-*   **Configure PATH (Highly Recommended)**:
-    *   **Best Practice**: Add the directory containing the `ffmpeg` executable (e.g., `ffmpeg.exe` on Windows) to your system's PATH environment variable. This allows the application to locate FFmpeg from any working directory.
-    *   **Windows Alternative**: For convenience, you can place the `ffmpeg.exe` file directly into the root directory of this project (`ultimate-watermark-remover-gui/`).
+For detailed setup instructions, including Python environment configuration, FFmpeg installation, and building from source, please refer to our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
 ---
 
@@ -107,41 +72,15 @@ Observe the real-time logs and dynamic progress updates. Upon completion, your w
 
 ---
 
-## 🚀 Quickstart (for Non-Technical Users (Pre-built Executables)) 🎁
+## 🚀 Getting Started
 
-- Windows
+### Non-Technical Users (Pre-built Executables) 🎁
 
-    If you're not comfortable with command-line tools or Python environments, you can often find pre-built, ready-to-use executable files (like `UltimateWatermarkRemover_v2.0.0.exe`) for Windows directly from the project's [GitHub Releases page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases). Simply download the latest version, extract it, and double-click the executable to launch the application!
+If you're not comfortable with command-line tools or Python environments, pre-built, ready-to-use executable files (like `UltimateWatermarkRemover_v2.0.0.exe`) for Windows are available directly from the project's [GitHub Releases page](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/releases). Simply download the latest version, extract it, and double-click the executable to launch the application!
 
----
+### Developers & Contributors
 
-## 📦 Build & Distribution (for Developers & Power Users)
-
-For users who prefer to run the application as a standalone executable on Windows, the project can be bundled using [PyInstaller](https://pyinstaller.org/). This creates a double-clickable `.exe` file that includes all necessary Python dependencies, removing the need for a local Python installation or manual dependency setup for end-users.
-
-### Building the Executable:
-
-1.  **Ensure PyInstaller is installed**:
-    ```bash
-    pip install pyinstaller
-    ```
-2.  **Navigate to the project root** in your terminal.
-3.  **Run PyInstaller**: Use the following command to create a one-folder bundle (recommended for PySide6 apps) with your application:
-    ```bash
-    pyinstaller UltimateWatermarkRemover.spec
-    ```
-    or
-    ```bash
-    pyinstaller --noconfirm --onedir --windowed --add-data "masks;masks" --add-data "videos;videos" --add-data "__version__.py;." --name "Ultimate Watermark Remover" src/main.py
-    ```
-    *   `--noconfirm`: Overwrites previous builds without prompt.
-    *   `--onedir`: Creates a single directory containing the executable and all its dependencies.
-    *   `--windowed`: Prevents a console window from appearing with the GUI.
-    *   `--add-data "masks;masks"`: Includes the `masks` directory.
-    *   `--add-data "videos;videos"`: Includes the `videos` directory.
-    *   `--add-data "__version__.py;."`: Explicitly adds the version file.
-    *   `--name "Ultimate Watermark Remover"`: Sets the name of the executable and its containing folder.
-5.  **Find the executable**: The generated application will be located in the `dist/Ultimate Watermark Remover/` directory.
+For setup, installation from source, and building instructions, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
