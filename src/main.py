@@ -1,5 +1,7 @@
 import os
 import sys
+import json
+from pathlib import Path
 
 # Determine if running as part of a PyInstaller bundle
 if hasattr(sys, "_MEIPASS"):
@@ -40,7 +42,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QProgressBar,
 )
-from PySide6.QtCore import QProcess, Qt
+from PySide6.QtCore import QProcess, Qt, QStandardPaths
 import src.worker as worker  # Import worker module
 
 
@@ -109,6 +111,9 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
         self.layout.addWidget(self.start_button)
+
+        # Load settings
+        self.load_settings()
 
         # QProcess setup
         self.process = QProcess()
@@ -286,6 +291,53 @@ class MainWindow(QMainWindow):
         video_extensions = (".mp4", ".avi", ".mov", ".mkv")
         return path.lower().endswith(video_extensions)
 
+    SETTINGS_FILE_NAME = "settings.json"
+
+    def _get_settings_file_path(self):
+        # Use QStandardPaths to get a platform-agnostic config directory
+        config_dir = QStandardPaths.writableLocation(QStandardPaths.AppConfigLocation)
+        if not config_dir:
+            # Fallback if QStandardPaths doesn't return a path (shouldn't happen)
+            config_dir = os.path.join(
+                os.path.expanduser("~"), ".ultimate_watermark_remover"
+            )
+
+        settings_path = Path(config_dir) / self.SETTINGS_FILE_NAME
+        settings_path.parent.mkdir(parents=True, exist_ok=True)
+        return str(settings_path)
+
+    def load_settings(self):
+        settings_file = self._get_settings_file_path()
+        if os.path.exists(settings_file):
+            try:
+                with open(settings_file, "r") as f:
+                    settings = json.load(f)
+                    if "watermark_mask_path" in settings:
+                        self.watermark_mask_deleted_path_display.setText(
+                            settings["watermark_mask_path"]
+                        )
+                    if "media_to_be_edited_path" in settings:
+                        self.video_to_be_edited_path_display.setText(
+                            settings["media_to_be_edited_path"]
+                        )
+            except Exception as e:
+                print(f"Error loading settings: {e}")
+
+    def save_settings(self):
+        settings_file = self._get_settings_file_path()
+        settings = {
+            "watermark_mask_path": self.watermark_mask_deleted_path_display.text(),
+            "media_to_be_edited_path": self.video_to_be_edited_path_display.text(),
+        }
+        try:
+            with open(settings_file, "w") as f:
+                json.dump(settings, f, indent=4)
+        except Exception as e:
+            print(f"Error saving settings: {e}")
+
+    def closeEvent(self, event):
+        self.save_settings()
+        event.accept()
 
 if __name__ == "__main__":
     # Check if this instance is intended to be a worker process
