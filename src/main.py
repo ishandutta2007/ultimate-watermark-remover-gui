@@ -339,6 +339,7 @@ class MainWindow(QMainWindow):
         self.save_settings()
         event.accept()
 
+
 if __name__ == "__main__":
     # Check if this instance is intended to be a worker process
     if "--_worker" in sys.argv:
