@@ -356,76 +356,110 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    # Modern Dark Theme Stylesheet
+    # Modern Dark Theme Stylesheet with Material Design inspirations
     QSS = """
 QMainWindow {
-    background-color: #2b2b2b; /* Dark background */
+    background-color: #2c2c2c; /* Dark background */
     color: #f0f0f0; /* Light text */
+    border: none;
 }
 
 QWidget {
-    background-color: #2b2b2b;
+    background-color: #2c2c2c;
     color: #f0f0f0;
     font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
     font-size: 10pt;
 }
 
+/* Add a subtle gradient to the main window or central widget for depth */
+QMainWindow#central_widget {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #2c2c2c, stop:1 #3a3a3a);
+    border-radius: 8px; /* Slightly rounded corners for the main app */
+    padding: 10px;
+}
+
 QLabel {
-    color: #f0f0f0;
+    color: #e0e0e0;
     padding: 2px;
 }
 
-QLineEdit, QTextEdit, QSpinBox {
-    background-color: #3c3c3c; /* Slightly lighter dark for input fields */
-    border: 1px solid #5a5a5a;
-    border-radius: 4px;
-    padding: 5px;
+QLineEdit, QTextEdit {
+    background-color: #3a3a3a; /* Darker input fields */
+    border: 1px solid #555555;
+    border-radius: 5px; /* Rounded corners for inputs */
+    padding: 8px;
     color: #f0f0f0;
-    selection-background-color: #0078d7; /* Accent blue for selection */
+    selection-background-color: #007bff; /* Accent blue for selection */
+}
+
+QLineEdit:focus, QTextEdit:focus {
+    border: 1px solid #007bff; /* Highlight on focus */
+    background-color: #454545; /* Slightly lighter on focus */
 }
 
 QPushButton {
-    background-color: #0078d7; /* Accent blue for buttons */
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #007bff, stop:1 #0056b3); /* Blue gradient button */
     color: #ffffff;
     border: none;
-    border-radius: 5px;
-    padding: 8px 15px;
+    border-radius: 5px; /* Rounded corners for buttons */
+    padding: 10px 20px;
     font-weight: bold;
+    min-width: 80px;
+    outline: none; /* Remove focus outline */
 }
 
 QPushButton:hover {
-    background-color: #0060ad; /* Darker blue on hover */
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #0056b3, stop:1 #004288); /* Darker gradient on hover */
 }
 
 QPushButton:pressed {
-    background-color: #004c8c; /* Even darker blue when pressed */
+    background: #003a70; /* Solid dark blue when pressed */
+    padding-top: 11px; /* Visual press effect */
+    padding-bottom: 9px;
 }
 
 QProgressBar {
     text-align: center;
-    background-color: #3c3c3c;
-    border: 1px solid #5a5a5a;
-    border-radius: 5px;
+    background-color: #3a3a3a;
+    border: 1px solid #555555;
+    border-radius: 5px; /* Rounded progress bar */
     color: #f0f0f0;
+    height: 20px;
 }
 
 QProgressBar::chunk {
-    background-color: #0078d7; /* Accent blue for progress */
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                stop:0 #28a745, stop:1 #218838); /* Green gradient for progress */
     border-radius: 5px;
 }
 
 QFileDialog {
-    background-color: #2b2b2b;
+    background-color: #2c2c2c;
     color: #f0f0f0;
 }
 
-/* For the file input layouts, to ensure consistent background */
+/* For separating sections subtly */
 QHBoxLayout, QVBoxLayout {
-    background-color: #2b2b2b;
+    spacing: 10px; /* Consistent spacing between items in layouts */
 }
 
-QWidget#central_widget { /* Targeting the central widget for padding */
-    padding: 10px;
+/* Example of a panel-separating border for specific widgets if needed */
+/* QWidget#somePanel { border-bottom: 1px solid #555555; margin-bottom: 10px; } */
+
+/* Central widget for padding */
+QWidget#central_widget {
+    padding: 15px; /* More generous padding around content */
+}
+
+/* Placeholder text styling */
+QLineEdit {
+    color: #aaaaaa;
+}
+QLineEdit[text=""] { /* Style placeholder when text is empty */
+    color: #888888;
 }
 """
     app.setStyleSheet(QSS)
