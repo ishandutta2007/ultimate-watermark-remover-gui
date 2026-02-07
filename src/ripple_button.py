@@ -35,15 +35,15 @@ class RippleAnimation(QPropertyAnimation):
         self._parent = parent
         self.center = center
         self.radius = 0
-        self.opacity = 0.5
-        self.color = QColor(255, 255, 255, 128) # White with some transparency
+        self.opacity = 0.8
+        self.color = QColor(200, 255, 200, 150) # Light transparent green
 
-        self.setDuration(500)
+        self.setDuration(800)
         self.setEasingCurve(QEasingCurve.OutCubic)
-        self.setEndValue(self._parent.width())
+        self.setEndValue(self._parent.width() * 2)
 
         self._opacity_animation = QPropertyAnimation(self, b"opacity")
-        self._opacity_animation.setDuration(500)
+        self._opacity_animation.setDuration(800)
         self._opacity_animation.setEndValue(0.0)
 
         self._animation_group = QParallelAnimationGroup()

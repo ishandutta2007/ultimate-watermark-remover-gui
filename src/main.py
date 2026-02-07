@@ -411,6 +411,11 @@ QPushButton {
     outline: none; /* Remove focus outline */
 }
 
+QPushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #218838, stop:1 #1a712e); /* Darker green gradient on hover */
+}
+
 
 
 QProgressBar {
