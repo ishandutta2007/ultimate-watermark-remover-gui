@@ -25,6 +25,7 @@ else:
 
 # Now that project_root is on sys.path, 'src' and '__version__.py' should be discoverable
 from src.utils import get_resource_path
+from src.ripple_button import RippleButton
 from __version__ import __version__
 
 # Rest of your imports
@@ -102,7 +103,7 @@ class MainWindow(QMainWindow):
             "Output from the script will appear here..."
         )
 
-        self.start_button = QPushButton("Start Processing")
+        self.start_button = RippleButton("Start Processing")
 
         # Add widgets to layout
         self.layout.addLayout(self.video_to_be_edited_layout)  # Now media to be edited
@@ -142,7 +143,7 @@ class MainWindow(QMainWindow):
         label = QLabel(label_text)
         path_display = QLineEdit()
         path_display.setPlaceholderText(placeholder_text)
-        browse_button = QPushButton("Browse")
+        browse_button = RippleButton("Browse")
 
         layout.addWidget(label)
         layout.addWidget(path_display)
@@ -400,7 +401,7 @@ QLineEdit:focus, QTextEdit:focus {
 
 QPushButton {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 #007bff, stop:1 #0056b3); /* Blue gradient button */
+                                stop:0 #28a745, stop:1 #218838); /* Green gradient button */
     color: #ffffff;
     border: none;
     border-radius: 5px; /* Rounded corners for buttons */
@@ -410,16 +411,7 @@ QPushButton {
     outline: none; /* Remove focus outline */
 }
 
-QPushButton:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 #0056b3, stop:1 #004288); /* Darker gradient on hover */
-}
 
-QPushButton:pressed {
-    background: #003a70; /* Solid dark blue when pressed */
-    padding-top: 11px; /* Visual press effect */
-    padding-bottom: 9px;
-}
 
 QProgressBar {
     text-align: center;
