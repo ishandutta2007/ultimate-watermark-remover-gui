@@ -25,7 +25,6 @@ else:
 
 # Now that project_root is on sys.path, 'src' and '__version__.py' should be discoverable
 from src.utils import get_resource_path
-from src.ripple_button import RippleButton
 from __version__ import __version__
 
 # Rest of your imports
@@ -103,7 +102,7 @@ class MainWindow(QMainWindow):
             "Output from the script will appear here..."
         )
 
-        self.start_button = RippleButton("Start Processing")
+        self.start_button = QPushButton("Start Processing")
 
         # Add widgets to layout
         self.layout.addLayout(self.video_to_be_edited_layout)  # Now media to be edited
@@ -143,7 +142,7 @@ class MainWindow(QMainWindow):
         label = QLabel(label_text)
         path_display = QLineEdit()
         path_display.setPlaceholderText(placeholder_text)
-        browse_button = RippleButton("Browse")
+        browse_button = QPushButton("Browse")
 
         layout.addWidget(label)
         layout.addWidget(path_display)
@@ -412,8 +411,7 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 #218838, stop:1 #1a712e); /* Darker green gradient on hover */
+    background: qradialgradient(cx:0.5, cy:0.5, radius: 1, fx:0.5, fy:0.5, stop:0 #4CAF50, stop:1 #218838);
 }
 
 
