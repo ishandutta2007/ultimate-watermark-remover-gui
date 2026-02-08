@@ -408,6 +408,7 @@ QPushButton {
     font-weight: bold;
     min-width: 80px;
     outline: none; /* Remove focus outline */
+    transition: background 1.5s ease-in-out;
 }
 
 QPushButton:hover {
