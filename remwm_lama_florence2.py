@@ -28,6 +28,18 @@ try:
 except ImportError:
     MatLike = np.ndarray
 
+# Detection key constant for Florence-2 outputs
+DETECTION_KEY = "<OPEN_VOCABULARY_DETECTION>"
+
+def get_video_codec(output_format: str):
+    """Get the video codec fourcc code for the specified output format."""
+    format_upper = output_format.upper()
+    if format_upper == "MP4":
+        return cv2.VideoWriter_fourcc(*'mp4v')
+    elif format_upper == "AVI":
+        return cv2.VideoWriter_fourcc(*'XVID')
+    else:
+        return cv2.VideoWriter_fourcc(*'mp4v')  # Default to MP4
 
 def download_lama_model():
     """Download LaMA model using iopaint."""
@@ -67,9 +79,22 @@ def load_lama_model(device):
                 raise RuntimeError("Failed to download LaMA model. Please run manually: python\\python.exe -m iopaint download --model lama")
         raise
 
+# Detection key constant for Florence-2 outputs
+DETECTION_KEY = "<OPEN_VOCABULARY_DETECTION>"
+
 class TaskType(str, Enum):
-    OPEN_VOCAB_DETECTION = "<OPEN_VOCABULARY_DETECTION>"
+    OPEN_VOCAB_DETECTION = DETECTION_KEY
     """Detect bounding box for objects and OCR text"""
+
+def get_video_codec(output_format: str) -> tuple:
+    """Get the video codec fourcc code for the specified output format."""
+    format_upper = output_format.upper()
+    if format_upper == "MP4":
+        return cv2.VideoWriter_fourcc(*'mp4v')
+    elif format_upper == "AVI":
+        return cv2.VideoWriter_fourcc(*'XVID')
+    else:
+        return cv2.VideoWriter_fourcc(*'mp4v')  # Default to MP4
 
 def identify(task_prompt: TaskType, image: MatLike, text_input: str, model, processor: AutoProcessor, device: str):
     if not isinstance(task_prompt, TaskType):
@@ -103,15 +128,14 @@ def get_watermark_mask(image: MatLike, model, processor: AutoProcessor, device: 
         max_bbox_percent: Maximum bbox size as percentage of image
         detection_prompt: Text prompt for detection (e.g. "watermark", "watermark Sora logo", "Getty Images")
     """
-    print("get_watermark_mask=======================>", image, model, processor, device, max_bbox_percent, detection_prompt)
+
     task_prompt = TaskType.OPEN_VOCAB_DETECTION
     parsed_answer = identify(task_prompt, image, detection_prompt, model, processor, device)
 
     mask = Image.new("L", image.size, 0)
     draw = ImageDraw.Draw(mask)
 
-    detection_key = "<OPEN_VOCABULARY_DETECTION>"
-    if detection_key in parsed_answer and "bboxes" in parsed_answer[detection_key]:
+    if DETECTION_KEY in parsed_answer and "bboxes" in parsed_answer[DETECTION_KEY]:
         image_area = image.width * image.height
         for bbox in parsed_answer[detection_key]["bboxes"]:
             x1, y1, x2, y2 = map(int, bbox)
@@ -136,11 +160,10 @@ def detect_only(image: MatLike, model, processor: AutoProcessor, device: str, ma
     parsed_answer = identify(task_prompt, image, detection_prompt, model, processor, device)
 
     results = []
-    detection_key = "<OPEN_VOCABULARY_DETECTION>"
 
-    if detection_key in parsed_answer and "bboxes" in parsed_answer[detection_key]:
+    if DETECTION_KEY in parsed_answer and "bboxes" in parsed_answer[DETECTION_KEY]:
         image_area = image.width * image.height
-        for bbox in parsed_answer[detection_key]["bboxes"]:
+        for bbox in parsed_answer[DETECTION_KEY]["bboxes"]:
             x1, y1, x2, y2 = map(int, bbox)
             bbox_area = (x2 - x1) * (y2 - y1)
             area_percent = (bbox_area / image_area) * 100
@@ -217,14 +240,8 @@ def process_video(input_path, output_path, florence_model, florence_processor, m
     temp_dir = tempfile.mkdtemp()
     temp_video_path = Path(temp_dir) / f"temp_no_audio.{output_format.lower()}"
     
-    # Set codec based on output format
-    if output_format.upper() == "MP4":
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    elif output_format.upper() == "AVI":
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    else:
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Default to MP4
-    
+    # Get codec and create video writer
+    fourcc = get_video_codec(output_format)
     out = cv2.VideoWriter(str(temp_video_path), fourcc, fps, (width, height))
     
     # Process each frame
@@ -305,7 +322,7 @@ def process_video(input_path, output_path, florence_model, florence_processor, m
         try:
             os.remove(str(temp_video_path))
             os.rmdir(temp_dir)
-        except:
+        except Exception:
             pass
     
     final_progress = progress_offset + progress_scale
@@ -408,14 +425,8 @@ def process_video_two_pass(input_path, output_path, florence_model, florence_pro
     temp_dir = tempfile.mkdtemp()
     temp_video_path = Path(temp_dir) / f"temp_no_audio.{output_format.lower()}"
 
-    # Set codec
-    if output_format.upper() == "MP4":
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    elif output_format.upper() == "AVI":
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    else:
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-
+    # Get codec and create video writer
+    fourcc = get_video_codec(output_format)
     out = cv2.VideoWriter(str(temp_video_path), fourcc, fps, (width, height))
 
     # Reset video to beginning
@@ -493,7 +504,7 @@ def process_video_two_pass(input_path, output_path, florence_model, florence_pro
         try:
             os.remove(str(temp_video_path))
             os.rmdir(temp_dir)
-        except:
+        except Exception:
             pass
 
     final_progress = progress_offset + progress_scale
