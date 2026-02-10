@@ -135,6 +135,7 @@ def get_watermark_mask(image: MatLike, model, processor: AutoProcessor, device: 
     mask = Image.new("L", image.size, 0)
     draw = ImageDraw.Draw(mask)
 
+    # fixed the variable issue - by Swaraj-SG  
     if DETECTION_KEY in parsed_answer and "bboxes" in parsed_answer[DETECTION_KEY]:
         image_area = image.width * image.height
         for bbox in parsed_answer[DETECTION_KEY]["bboxes"]:
