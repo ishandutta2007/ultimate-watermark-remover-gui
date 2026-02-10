@@ -137,7 +137,7 @@ def get_watermark_mask(image: MatLike, model, processor: AutoProcessor, device: 
 
     if DETECTION_KEY in parsed_answer and "bboxes" in parsed_answer[DETECTION_KEY]:
         image_area = image.width * image.height
-        for bbox in parsed_answer[detection_key]["bboxes"]:
+        for bbox in parsed_answer[DETECTION_KEY]["bboxes"]:
             x1, y1, x2, y2 = map(int, bbox)
             bbox_area = (x2 - x1) * (y2 - y1)
             if (bbox_area / image_area) * 100 <= max_bbox_percent:
