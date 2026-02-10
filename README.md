@@ -51,6 +51,10 @@ To launch the **Ultimate Watermark Remover GUI** from source, navigate to the pr
 ```bash
 python src/main.py
 ```
+or
+```bash
+python remwm_lama_florence2.py .\videos\clip-pre.mp4
+```
 
 ### 🖼️ See it in action!
 *(**TODO**: Insert a GIF demonstrating the application's usage here.
