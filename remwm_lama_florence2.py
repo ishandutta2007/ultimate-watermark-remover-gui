@@ -676,6 +676,7 @@ def main(input_path: str, output_path: str, preview: bool, overwrite: bool, tran
     if input_path.is_dir():
         if not output_path.exists():
             output_path.mkdir(parents=True)
+            print("updated output_path =>", output_path)
 
         # Include video files in the search
         images = list(input_path.glob("*.[jp][pn]g")) + list(input_path.glob("*.webp"))
