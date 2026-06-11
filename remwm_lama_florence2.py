@@ -103,7 +103,7 @@ def get_watermark_mask(image: MatLike, model, processor: AutoProcessor, device: 
         max_bbox_percent: Maximum bbox size as percentage of image
         detection_prompt: Text prompt for detection (e.g. "watermark", "watermark Sora logo", "Getty Images")
     """
-    print("get_watermark_mask=======================>", image, model, processor, device, max_bbox_percent, detection_prompt)
+    # print("get_watermark_mask=======================>", image, model, processor, device, max_bbox_percent, detection_prompt)
     task_prompt = TaskType.OPEN_VOCAB_DETECTION
     parsed_answer = identify(task_prompt, image, detection_prompt, model, processor, device)
 
@@ -228,6 +228,7 @@ def process_video(input_path, output_path, florence_model, florence_processor, m
     out = cv2.VideoWriter(str(temp_video_path), fourcc, fps, (width, height))
     
     # Process each frame
+    print(f"Starting frame-by-frame processing of {total_frames} frames...")
     with tqdm.tqdm(total=total_frames, desc="Processing video frames") as pbar:
         frame_count = 0
         while cap.isOpened():
@@ -663,11 +664,14 @@ def main(input_path: str, output_path: str, preview: bool, overwrite: bool, tran
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
+    
+    print("Loading Florence-2 Model (microsoft/Florence-2-large)... This may take a moment.")
     florence_model = AutoModelForCausalLM.from_pretrained("microsoft/Florence-2-large", trust_remote_code=True).to(device).eval()
     florence_processor = AutoProcessor.from_pretrained("microsoft/Florence-2-large", trust_remote_code=True)
     logger.info("Florence-2 Model loaded")
 
     if not transparent:
+        print("Loading LaMa model...")
         model_manager = load_lama_model(device)
         logger.info("LaMa model loaded")
     else:
