@@ -1,5 +1,5 @@
 # 🌟 Ultimate Watermark Remover GUI 🌟
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/Python-3.11.4-blue.svg)](https://www.python.org/downloads/release/python-3114/)
 [![Built with PySide6](https://img.shields.io/badge/Built_with-PySide6-green.svg)](https://doc.qt.io/qtforpython/PySide6/index.html)
 [![Powered by OpenCV](https://img.shields.io/badge/Powered_by-OpenCV-orange.svg)](https://opencv.org/)
