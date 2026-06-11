@@ -5,7 +5,7 @@ a = Analysis(
     ['src\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[('masks', 'masks'), ('videos', 'videos'), ('__version__.py', '.')],
+    datas=[('masks', 'masks'), ('videos', 'videos'), ('__version__.py', '.'), ('LICENSE', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
