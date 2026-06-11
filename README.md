@@ -48,6 +48,22 @@ For detailed setup instructions, including Python environment configuration, FFm
 
 ## ▶️ Usage
 
+### 🛠️ Setup
+
+Before running the application, ensure you have Python 3.11.4 installed and the required libraries:
+
+1.  **Install Python 3.11.4 via pyenv**:
+    ```bash
+    pyenv install 3.11.4
+    pyenv local 3.11.4
+    ```
+2.  **Install Dependencies**:
+    ```bash
+    python -m pip install -r requirements.txt
+    ```
+
+### 🚀 Running the Application
+
 To launch the **Ultimate Watermark Remover GUI** from source, navigate to the project's root directory in your terminal or command prompt and run:
 ```bash
 python src/main.py
