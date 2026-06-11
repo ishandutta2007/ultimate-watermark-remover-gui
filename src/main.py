@@ -107,8 +107,8 @@ class MainWindow(QMainWindow):
 
         # Open File and Folder buttons
         self.after_processing_layout = QHBoxLayout()
-        self.open_file_button = QPushButton("Open File")
-        self.open_folder_button = QPushButton("Open Folder")
+        self.open_file_button = QPushButton("Open Output File")
+        self.open_folder_button = QPushButton("Open Output Folder")
         self.open_file_button.setVisible(False)
         self.open_folder_button.setVisible(False)
         self.after_processing_layout.addWidget(self.open_file_button)
