@@ -6,6 +6,7 @@
 [![Uses FFmpeg](https://img.shields.io/badge/Uses-FFmpeg-red.svg)](https://ffmpeg.org/)
 [![GitHub Stars](https://img.shields.io/github/stars/ishandutta2007/ultimate-watermark-remover-gui?style=social)](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/ishandutta2007/ultimate-watermark-remover-gui?style=social)](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/network/members)
+![GitHub followers](https://img.shields.io/github/followers/ishandutta2007)
 
 ---
 
