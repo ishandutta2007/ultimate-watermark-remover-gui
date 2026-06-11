@@ -42,7 +42,8 @@ from PySide6.QtWidgets import (
     QLabel,
     QProgressBar,
 )
-from PySide6.QtCore import QProcess, Qt, QStandardPaths
+from PySide6.QtCore import QProcess, Qt, QStandardPaths, QUrl
+from PySide6.QtGui import QDesktopServices
 import src.worker as worker  # Import worker module
 
 
@@ -104,6 +105,15 @@ class MainWindow(QMainWindow):
 
         self.start_button = QPushButton("Start Processing")
 
+        # Open File and Folder buttons
+        self.after_processing_layout = QHBoxLayout()
+        self.open_file_button = QPushButton("Open File")
+        self.open_folder_button = QPushButton("Open Folder")
+        self.open_file_button.setVisible(False)
+        self.open_folder_button.setVisible(False)
+        self.after_processing_layout.addWidget(self.open_file_button)
+        self.after_processing_layout.addWidget(self.open_folder_button)
+
         # Add widgets to layout
         self.layout.addLayout(self.video_to_be_edited_layout)  # Now media to be edited
         self.layout.addLayout(self.watermark_mask_deleted_layout)  # Now watermark mask
@@ -111,6 +121,9 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.progress_bar)
         self.layout.addWidget(self.log_display)
         self.layout.addWidget(self.start_button)
+        self.layout.addLayout(self.after_processing_layout)
+
+        self.last_output_path = None
 
         # Load settings
         self.load_settings()
@@ -133,9 +146,27 @@ class MainWindow(QMainWindow):
             )
         )
         self.start_button.clicked.connect(self.start_worker_process)
+        self.open_file_button.clicked.connect(self.open_output_file)
+        self.open_folder_button.clicked.connect(self.open_output_folder)
         self.process.readyReadStandardOutput.connect(self.handle_stdout)
         self.process.finished.connect(self.handle_finished)
         self.process.errorOccurred.connect(self.handle_error)
+
+    def open_output_file(self):
+        if self.last_output_path and os.path.exists(self.last_output_path):
+            abs_path = os.path.abspath(self.last_output_path)
+            if sys.platform == "win32":
+                os.startfile(abs_path)
+            else:
+                QDesktopServices.openUrl(QUrl.fromLocalFile(abs_path))
+
+    def open_output_folder(self):
+        if self.last_output_path and os.path.exists(self.last_output_path):
+            folder_path = os.path.dirname(os.path.abspath(self.last_output_path))
+            if sys.platform == "win32":
+                os.startfile(folder_path)
+            else:
+                QDesktopServices.openUrl(QUrl.fromLocalFile(folder_path))
 
     def _create_file_input(self, label_text, placeholder_text, file_filter):
         layout = QHBoxLayout()
@@ -212,6 +243,9 @@ class MainWindow(QMainWindow):
         )  # Set initial progress label
         self.log_display.clear()
         self.log_display.append("Starting worker process...")
+        self.last_output_path = None
+        self.open_file_button.setVisible(False)
+        self.open_folder_button.setVisible(False)
         self.toggle_ui(False)
         # Determine the Python interpreter and arguments for the worker process
         worker_process_args = ["-u"]  # Unbuffered output
@@ -261,20 +295,29 @@ class MainWindow(QMainWindow):
 
     def handle_stdout(self):
         data = self.process.readAllStandardOutput()
-        stdout = data.data().decode("utf-8").strip()
-        self.log_display.append(stdout)
+        stdout_batch = data.data().decode("utf-8")
+        self.log_display.append(stdout_batch.strip())
 
-        # Check for progress updates
-        if stdout.startswith("PROGRESS:"):
-            try:
-                progress_value = int(stdout.split(":")[1])
-                self.update_progress_bar(progress_value)
-            except ValueError:
-                pass  # Ignore malformed progress messages
-        elif stdout.startswith("STAGE:"):
-            self.progress_label.setText(
-                stdout[6:].strip()
-            )  # Update progress label with stage message
+        for line in stdout_batch.splitlines():
+            line = line.strip()
+            # Check for progress updates
+            if line.startswith("PROGRESS:"):
+                try:
+                    progress_value = int(line.split(":")[1])
+                    self.update_progress_bar(progress_value)
+                except ValueError:
+                    pass  # Ignore malformed progress messages
+            elif line.startswith("STAGE:"):
+                self.progress_label.setText(
+                    line[6:].strip()
+                )  # Update progress label with stage message
+            elif "saved to:" in line:
+                # Extract path from "Unmasked video saved to: path" or "Unmasked image saved to: path"
+                parts = line.split("saved to:")
+                if len(parts) > 1:
+                    extracted_path = parts[1].strip()
+                    self.last_output_path = os.path.abspath(extracted_path)
+                    self.log_display.append(f"DEBUG: last_output_path extracted: {self.last_output_path}")
 
     def handle_finished(self, exit_code, exit_status):
         status = "finished" if exit_status == QProcess.NormalExit else "crashed"
@@ -284,6 +327,9 @@ class MainWindow(QMainWindow):
         self.progress_label.setText(
             "Finished."
         )  # Clear progress label or set to finished
+        if self.last_output_path:
+            self.open_file_button.setVisible(True)
+            self.open_folder_button.setVisible(True)
 
     def handle_error(self, error):
         self.log_display.append(f"An error occurred: {error.name}")
