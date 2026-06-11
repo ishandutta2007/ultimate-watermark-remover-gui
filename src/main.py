@@ -43,7 +43,7 @@ from PySide6.QtWidgets import (
     QProgressBar,
 )
 from PySide6.QtCore import QProcess, Qt, QStandardPaths, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QDesktopServices, QIcon
 import src.worker as worker  # Import worker module
 
 
@@ -53,6 +53,11 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle(f"Ultimate Watermark Remover - v{__version__}")
         self.setGeometry(100, 100, 600, 400)
+
+        # Set window icon
+        icon_path = get_resource_path("images/logo.png")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
 
         # Main widget and layout
         self.central_widget = QWidget()
