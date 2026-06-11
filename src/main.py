@@ -159,6 +159,14 @@ class MainWindow(QMainWindow):
     def update_progress_bar(self, value):
         self.progress_bar.setValue(value)
 
+    def toggle_ui(self, enabled):
+        """Enable or disable interactive UI elements during processing."""
+        self.start_button.setEnabled(enabled)
+        self.watermark_mask_deleted_browse_button.setEnabled(enabled)
+        self.video_to_be_edited_browse_button.setEnabled(enabled)
+        self.watermark_mask_deleted_path_display.setEnabled(enabled)
+        self.video_to_be_edited_path_display.setEnabled(enabled)
+
     def start_worker_process(self):
         watermark_template_path = self.watermark_mask_deleted_path_display.text()
         media_to_be_edited_path = self.video_to_be_edited_path_display.text()
@@ -204,7 +212,7 @@ class MainWindow(QMainWindow):
         )  # Set initial progress label
         self.log_display.clear()
         self.log_display.append("Starting worker process...")
-        self.start_button.setEnabled(False)
+        self.toggle_ui(False)
         # Determine the Python interpreter and arguments for the worker process
         worker_process_args = ["-u"]  # Unbuffered output
 
@@ -271,7 +279,7 @@ class MainWindow(QMainWindow):
     def handle_finished(self, exit_code, exit_status):
         status = "finished" if exit_status == QProcess.NormalExit else "crashed"
         self.log_display.append(f"Process {status} with exit code: {exit_code}.")
-        self.start_button.setEnabled(True)
+        self.toggle_ui(True)
         self.progress_bar.setValue(0)  # Reset or set to 100 upon completion
         self.progress_label.setText(
             "Finished."
@@ -279,7 +287,7 @@ class MainWindow(QMainWindow):
 
     def handle_error(self, error):
         self.log_display.append(f"An error occurred: {error.name}")
-        self.start_button.setEnabled(True)
+        self.toggle_ui(True)
         self.progress_bar.setValue(0)  # Reset on error
         self.progress_label.setText("Error occurred.")  # Set progress label to error
 
@@ -413,6 +421,11 @@ QPushButton {
 
 QPushButton:hover {
     background: qradialgradient(cx:0.5, cy:0.5, radius: 1, fx:0.5, fy:0.5, stop:0 #4CAF50, stop:1 #218838);
+}
+
+QPushButton:disabled {
+    background: #555555;
+    color: #aaaaaa;
 }
 
 
