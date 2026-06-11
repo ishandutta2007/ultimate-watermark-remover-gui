@@ -64,11 +64,16 @@ Before running the application, ensure you have Python 3.11.4 installed and the 
 
 ### 🚀 Running the Application
 
-To launch the **Ultimate Watermark Remover GUI** from source, navigate to the project's root directory in your terminal or command prompt and run:
+Choose the mode that best fits your needs:
+
+#### 1. Graphical User Interface (GUI)
+Recommended for most users. This launches the intuitive desktop application for manual selection and processing.
 ```bash
 python src/main.py
 ```
-or
+
+#### 2. Advanced CLI Processing (Automated)
+Recommended for power users or those wanting to leverage automated watermark detection (Florence-2) and advanced inpainting (LaMa).
 ```bash
 python remwm_lama_florence2.py .\videos\clip-pre.mp4
 ```
