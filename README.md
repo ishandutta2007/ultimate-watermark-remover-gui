@@ -1,16 +1,24 @@
 # 🌟 Ultimate Watermark Remover GUI 🌟
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python Version](https://img.shields.io/badge/Python-3.11.4-blue.svg)](https://www.python.org/downloads/release/python-3114/)
-[![Built with PySide6](https://img.shields.io/badge/Built_with-PySide6-green.svg)](https://doc.qt.io/qtforpython/PySide6/index.html)
-[![Powered by OpenCV](https://img.shields.io/badge/Powered_by-OpenCV-orange.svg)](https://opencv.org/)
-[![Uses FFmpeg](https://img.shields.io/badge/Uses-FFmpeg-red.svg)](https://ffmpeg.org/)
-[![GitHub Stars](https://img.shields.io/github/stars/ishandutta2007/ultimate-watermark-remover-gui?style=social)](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/ishandutta2007/ultimate-watermark-remover-gui?style=social)](https://github.com/ishandutta2007/ultimate-watermark-remover-gui/network/members)
-![GitHub followers](https://img.shields.io/github/followers/ishandutta2007)
+
+<p align="center">
+  <img src="assets/banner.svg" alt="Ultimate Watermark Remover Banner" width="100%">
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
+  <a href="https://www.python.org/downloads/release/python-3114/"><img alt="Python Version" src="https://img.shields.io/badge/Python-3.11.4-blue.svg" /></a>
+  <a href="https://doc.qt.io/qtforpython/PySide6/index.html"><img alt="Built with PySide6" src="https://img.shields.io/badge/Built_with-PySide6-green.svg" /></a>
+  <a href="https://opencv.org/"><img alt="Powered by OpenCV" src="https://img.shields.io/badge/Powered_by-OpenCV-orange.svg" /></a>
+  <a href="https://ffmpeg.org/"><img alt="Uses FFmpeg" src="https://img.shields.io/badge/Uses-FFmpeg-red.svg" /></a>
+  <a href="https://github.com/ishandutta2007/ultimate-watermark-remover-gui/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/ishandutta2007/ultimate-watermark-remover-gui?style=social" /></a>
+  <a href="https://github.com/ishandutta2007/ultimate-watermark-remover-gui/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/ishandutta2007/ultimate-watermark-remover-gui?style=social" /></a>
+  <a href="https://github.com/ishandutta2007"><img alt="GitHub followers" src="https://img.shields.io/github/followers/ishandutta2007?label=Follow" /></a>
+</p>
 
 ---
 
 ## 🚀 Project Overview
+
 Tired of intrusive watermarks degrading your precious photos and videos? The **Ultimate Watermark Remover GUI** is your go-to, powerful, and absolutely **free open-source desktop application**! 🚀 Designed with simplicity and efficiency in mind, it seamlessly erases unwanted watermarks from both images and videos.
 
 Built with Python and PySide6, this intuitive tool provides a robust solution for content creators, photographers, and anyone looking to enhance their media. Whether it's a pesky logo, distracting text, or any overlay, our advanced processing engine, powered by the mighty 🧠 **OpenCV** and versatile 🎬 **FFmpeg**, delivers pristine, watermark-free results.

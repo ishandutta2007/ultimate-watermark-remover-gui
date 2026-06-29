@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Accent Gradient 1 -->
+    <linearGradient id="accent-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+
+    <!-- Accent Gradient 2 (Highlight/Glow) -->
+    <linearGradient id="accent-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e" />
+      <stop offset="100%" stop-color="#fb7185" />
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="1" />
+    </pattern>
+
+    <!-- Blur Filter for Glow Effect -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Layer -->
+  <rect width="1200" height="300" fill="url(#bg-grad)" rx="15" />
+  <rect width="1200" height="300" fill="url(#grid)" rx="15" />
+
+  <!-- Decorative Abstract Shapes (Glows) -->
+  <circle cx="200" cy="100" r="120" fill="#38bdf8" opacity="0.15" filter="url(#glow)" />
+  <circle cx="1000" cy="200" r="150" fill="#f43f5e" opacity="0.1" filter="url(#glow)" />
+  <circle cx="600" cy="150" r="80" fill="#818cf8" opacity="0.1" filter="url(#glow)" />
+
+  <!-- Flowing Abstract Wave representing watermark removal/erasing -->
+  <path d="M -50,220 Q 200,120 450,200 T 950,150 T 1250,250" fill="none" stroke="url(#accent-grad-1)" stroke-width="4" opacity="0.3" />
+  <path d="M -50,240 Q 250,180 500,230 T 1000,120 T 1250,190" fill="none" stroke="url(#accent-grad-2)" stroke-width="2" opacity="0.2" />
+
+  <!-- Core Illustration: Before & After Visual Metaphor -->
+  <g transform="translate(100, 75)">
+    <!-- Picture frame mockup -->
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" />
+    <!-- "Watermark" Text on the left side (being erased/crossed out) -->
+    <text x="35" y="85" font-family="'Inter', system-ui, sans-serif" font-size="22" font-weight="900" fill="#f43f5e" opacity="0.8" letter-spacing="1">WATERMARK</text>
+    <line x1="30" y1="78" x2="170" y2="78" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    
+    <!-- Transition Arrow -->
+    <path d="M 230,75 L 270,75 M 260,65 L 270,75 L 260,85" fill="none" stroke="url(#accent-grad-1)" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Cleaned Picture frame mockup -->
+    <rect x="300" y="0" width="200" height="150" rx="10" fill="#1e293b" stroke="url(#accent-grad-1)" stroke-width="2" />
+    <!-- Sparkles/Magic removal effect -->
+    <path d="M 390,55 L 400,65 M 390,65 L 400,55" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+    <path d="M 410,85 L 420,95 M 410,95 L 420,85" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+    <circle cx="395" cy="60" r="1.5" fill="#fff" />
+    <circle cx="415" cy="90" r="1.5" fill="#fff" />
+    <!-- Sparkle star -->
+    <path d="M 370,80 Q 370,70 380,70 Q 370,70 370,60 Q 370,70 360,70 Q 370,70 370,80 Z" fill="#38bdf8" />
+  </g>
+
+  <!-- Text & Branding -->
+  <g transform="translate(680, 110)">
+    <!-- Subtitle / Category -->
+    <text x="0" y="0" font-family="'Inter', system-ui, sans-serif" font-size="14" font-weight="800" fill="#38bdf8" letter-spacing="3" text-transform="uppercase">AI-Powered Media Restoration</text>
+    <!-- Main Title -->
+    <text x="0" y="45" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="38" font-weight="900" fill="#ffffff" letter-spacing="-0.5">
+      Ultimate Watermark Remover
+    </text>
+    <!-- Description / Tagline -->
+    <text x="0" y="80" font-family="'Inter', system-ui, sans-serif" font-size="16" font-weight="500" fill="#94a3b8">
+      Sleek GUI to effortlessly erase overlays from images &amp; videos.
+    </text>
+  </g>
+
+  <!-- Decorative border glow/accent -->
+  <rect x="1" y="1" width="1198" height="298" rx="14" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="2" />
+</svg>
