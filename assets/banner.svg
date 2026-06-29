@@ -71,7 +71,7 @@
     <!-- Subtitle / Category -->
     <text x="0" y="0" font-family="'Inter', system-ui, sans-serif" font-size="14" font-weight="800" fill="#38bdf8" letter-spacing="3" text-transform="uppercase">AI-Powered Media Restoration</text>
     <!-- Main Title -->
-    <text x="0" y="45" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="38" font-weight="900" fill="#ffffff" letter-spacing="-0.5">
+    <text x="0" y="45" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="34" font-weight="900" fill="#ffffff" letter-spacing="-0.5">
       Ultimate Watermark Remover
     </text>
     <!-- Description / Tagline -->
