@@ -71,33 +71,38 @@ For users who prefer to run the application as a standalone executable on Window
 
 ### Building the Executable:
 
-1.  **Ensure PyInstaller is installed**:
-    ```bash
-    pip install pyinstaller
+The repository includes `build_windows.bat`, which performs the complete Windows build in a local `.venv`:
+
+```bat
+build_windows.bat
+```
+
+The script installs the dependencies from `requirements.txt`, installs PyInstaller, and runs `UltimateWatermarkRemover.spec`. The resulting executable is:
+
+```text
+dist\UltimateWatermarkRemover\UltimateWatermarkRemover.exe
+```
+
+To run the individual steps manually:
+
+1.  **Create and activate a virtual environment**:
+    ```bat
+    py -m venv .venv
+    .venv\Scripts\activate
     ```
 
-2.  **Navigate to the project root** in your terminal.
-
-3.  **Run PyInstaller**: Use the following command to create a one-folder bundle (recommended for PySide6 apps) with your application:
+2.  **Install the application dependencies and PyInstaller**:
     ```bash
-    pyinstaller UltimateWatermarkRemover.spec
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt pyinstaller
     ```
-    
-    Or use the manual command:
-    ```bash
-    pyinstaller --noconfirm --onedir --windowed --add-data "masks;masks" --add-data "videos;videos" --add-data "__version__.py;." --name "Ultimate Watermark Remover" src/main.py
-    ```
-    
-    Command options:
-    *   `--noconfirm`: Overwrites previous builds without prompt.
-    *   `--onedir`: Creates a single directory containing the executable and all its dependencies.
-    *   `--windowed`: Prevents a console window from appearing with the GUI.
-    *   `--add-data "masks;masks"`: Includes the `masks` directory.
-    *   `--add-data "videos;videos"`: Includes the `videos` directory.
-    *   `--add-data "__version__.py;."`: Explicitly adds the version file.
-    *   `--name "Ultimate Watermark Remover"`: Sets the name of the executable and its containing folder.
 
-4.  **Find the executable**: The generated application will be located in the `dist/Ultimate Watermark Remover/` directory.
+3.  **Run PyInstaller from the project root**:
+    ```bash
+    python -m PyInstaller --noconfirm --clean UltimateWatermarkRemover.spec
+    ```
+
+The build is a one-folder Windows bundle. Copy the complete `dist\UltimateWatermarkRemover` directory when distributing it; do not copy only the `.exe`. FFmpeg is not bundled and must be installed separately and available on `PATH` for video audio processing.
 
 ---
 
@@ -130,6 +135,7 @@ Understanding the project layout will help you contribute effectively:
 - `models/` - Machine learning models (if applicable)
 - `requirements.txt` - Python package dependencies
 - `UltimateWatermarkRemover.spec` - PyInstaller specification file
+- `build_windows.bat` - Windows build helper script
 - `install_packages.bat` - Windows installation helper script
 
 ---
